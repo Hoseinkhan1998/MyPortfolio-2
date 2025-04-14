@@ -1,12 +1,9 @@
-<script setup>
-</script>
+<script setup></script>
 
 <template>
-  <div class=" bg-neutral-100 text-neutral-900">
-    <div class="grid grid-cols-12 relative">      
-      <div class="col-span-full">
-        <router-view></router-view>
-      </div>
+  <div class="grid grid-cols-12 relative">
+    <div class="col-span-full">
+      <router-view></router-view>
     </div>
   </div>
 </template>

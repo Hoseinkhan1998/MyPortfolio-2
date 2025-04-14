@@ -1,0 +1,76 @@
+<script setup>
+import { ref, onMounted, onUnmounted } from "vue";
+import TopSection from "./TopSection.vue";
+import Header from "./Header.vue";
+import AboutMe from "./AboutMe.vue";
+import Skills from "./Skills.vue";
+import Projects from "./Projects.vue";
+
+const emit = defineEmits(["handleDisplay"]);
+
+function handleDisplay(item) {
+  emit("handleDisplay", item);
+}
+
+const props = defineProps({
+  isMobile: Boolean,
+});
+
+const showScrollToTop = ref(false);
+
+const handleScroll = () => {
+  const playtableElement = document.querySelector(".playtable");
+  if (playtableElement) {
+    const { top } = playtableElement.getBoundingClientRect();
+    showScrollToTop.value = window.scrollY > top;
+  }
+};
+
+const scrollToTop = () => {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+};
+
+onMounted(() => {
+  window.addEventListener("scroll", handleScroll);
+});
+
+onUnmounted(() => {
+  window.removeEventListener("scroll", handleScroll);
+});
+</script>
+
+<template>
+  <div class="grid grid-cols-12 bg-neutral-200 text-neutral-900 dark:text-neutral-100 dark:bg-neutral-950">
+    <div class="col-span-full z-20 sticky top-0 lg:block hidden">
+      <div class="bg-[#00000050] text-white px-5 py-4 backdrop-blur-sm">
+        <Header />
+      </div>
+    </div>
+    <div class="col-span-full lg:block hidden -mt-24">
+      <TopSection @handleDisplay="handleDisplay" />
+    </div>
+    <div class="col-span-full lg:block hidden mt-24 mb-28 playtable">
+      <AboutMe @handleDisplay="handleDisplay" />
+    </div>
+    <div class="col-span-full lg:block hidden mb-28">
+      <Skills @handleDisplay="handleDisplay" />
+    </div>
+    <div class="col-span-full lg:block hidden mb-28">
+      <Projects @handleDisplay="handleDisplay" />
+    </div>
+  </div>
+  <!-- scroll to top button -->
+  <button v-if="showScrollToTop" @click="scrollToTop" class="fixed bottom-4 z-30 left-4">
+    <div class="bg-neutral-700 text-white p-1">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+      </svg>
+    </div>
+  </button>
+</template>
+
+<style>
+.playtable {
+  scroll-margin-top: 16px;
+}
+</style>

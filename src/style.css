@@ -10,13 +10,5 @@
     font-style: normal;
   }
   
-  :root {
-    --bg-an-color: rgba(229, 229, 229, 0.104);
-    --bg-main-color: rgb(229, 229, 229);
-  }
-  
-  [data-theme="dark"] {
-    --bg-an-color: rgba(18, 18, 18, 0.398);
-    --bg-main-color: rgb(18, 18, 18);
-  }
+
   

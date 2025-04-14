@@ -1,9 +1,9 @@
 import { createRouter, createWebHistory } from "vue-router";
-import HomePage from "../components/HomePage/HomePage.vue";
+import MainHomePage from "../components/HomePage/MainHomePage.vue";
 // import TaskModule from "../components/Modules/TaskModule.vue";
 
 const routes = [
-  { path: "/", component: HomePage, name: "home" },
+  { path: "/", component: MainHomePage, name: "home" },
   // { path: "/task-module", component: TaskModule, name: "task-module" },  
 ];
 
