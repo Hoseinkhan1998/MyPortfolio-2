@@ -5,11 +5,17 @@ import Header from "./Header.vue";
 import AboutMe from "./AboutMe.vue";
 import Skills from "./Skills.vue";
 import Projects from "./Projects.vue";
+import ContactMe from "./ContactMe.vue";
+import Footer from "./Footer.vue";
 
-const emit = defineEmits(["handleDisplay"]);
-
-function handleDisplay(item) {
-  emit("handleDisplay", item);
+const currentSection = ref("");
+// ۲) اسکرول ۲۰۰px بالاتر و ست کردن currentSection
+function handleDisplay(targetId) {
+  const el = document.getElementById(targetId);
+  if (el) {
+    const top = el.getBoundingClientRect().top + window.scrollY;
+    window.scrollTo({ top: top - 100, behavior: "smooth" });
+  }
 }
 
 const props = defineProps({
@@ -18,16 +24,34 @@ const props = defineProps({
 
 const showScrollToTop = ref(false);
 
+const scrollToTop = () => {
+  window.scrollTo({ top: 0, behavior: "smooth" });
+};
+
+
+// ۳) هنگام اسکرول دستی، بخش فعال رو تشخیص می‌دهیم
+const sectionIds = ["aboutMe", "skills", "projects", "contact"];
 const handleScroll = () => {
   const playtableElement = document.querySelector(".playtable");
   if (playtableElement) {
     const { top } = playtableElement.getBoundingClientRect();
     showScrollToTop.value = window.scrollY > top;
   }
-};
-
-const scrollToTop = () => {
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  let found = false;
+  for (const id of sectionIds) {
+    const el = document.getElementById(id);
+    if (!el) continue;
+    const { top } = el.getBoundingClientRect();
+    if (top <= 200 && top + el.offsetHeight > 200) {
+      currentSection.value = id;
+      found = true;
+      break;
+    }
+  }
+  if (!found) {
+    // قبل از بخش aboutMe یا روی TopSection هستیم
+    currentSection.value = "";
+  }
 };
 
 onMounted(() => {
@@ -43,20 +67,26 @@ onUnmounted(() => {
   <div class="grid grid-cols-12 bg-neutral-200 text-neutral-900 dark:text-neutral-100 dark:bg-neutral-950">
     <div class="col-span-full z-20 sticky top-0 lg:block hidden">
       <div class="bg-[#00000050] text-white px-5 py-4 backdrop-blur-sm">
-        <Header />
+        <Header :currentSection="currentSection" @handleDisplay="handleDisplay" />
       </div>
     </div>
     <div class="col-span-full lg:block hidden -mt-24">
       <TopSection @handleDisplay="handleDisplay" />
     </div>
-    <div class="col-span-full lg:block hidden mt-24 mb-28 playtable">
+    <div class="col-span-full lg:block hidden mt-24 mb-28 playtable" id="aboutMe">
       <AboutMe @handleDisplay="handleDisplay" />
     </div>
-    <div class="col-span-full lg:block hidden mb-28">
+    <div class="col-span-full lg:block hidden mb-28" id="skills">
       <Skills @handleDisplay="handleDisplay" />
     </div>
-    <div class="col-span-full lg:block hidden mb-28">
+    <div class="col-span-full lg:block hidden mb-28" id="projects">
       <Projects @handleDisplay="handleDisplay" />
+    </div>
+    <div class="col-span-full lg:block hidden mb-28" id="contact">
+      <ContactMe @handleDisplay="handleDisplay" />
+    </div>
+    <div class="col-span-full " id="contact">
+      <Footer @handleDisplay="handleDisplay" />
     </div>
   </div>
   <!-- scroll to top button -->

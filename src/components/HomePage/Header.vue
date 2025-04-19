@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref } from "vue";
 import { useDark, useToggle } from "@vueuse/core";
 
 const emit = defineEmits(["handleDisplay"]);
@@ -9,7 +9,7 @@ function handleDisplay(item) {
 }
 
 const props = defineProps({
-  isMobile: Boolean,
+  currentSection: String,
 });
 
 const isDark = useDark();
@@ -42,10 +42,10 @@ const toggleDark = useToggle(isDark);
     </div>
     <div class="col-span-6">
       <div class="flex items-center justify-center mt-2 text-lg">
-        <button class="focus:bg-neutral-100 focus:text-neutral-900 rounded-xl w-36">about me</button>
-        <button class="focus:bg-neutral-100 focus:text-neutral-900 rounded-xl w-36">skils</button>
-        <button class="focus:bg-neutral-100 focus:text-neutral-900 rounded-xl w-36">projects</button>
-        <button class="focus:bg-neutral-100 focus:text-neutral-900 rounded-xl w-36">contact me</button>
+        <button @click="handleDisplay('aboutMe')" :class="['rounded-xl w-36', props.currentSection === 'aboutMe' ? 'bg-neutral-100 text-neutral-900' : '']">about me</button>
+        <button @click="handleDisplay('skills')" :class="['rounded-xl w-36', props.currentSection === 'skills' ? 'bg-neutral-100 text-neutral-900' : '']">skills</button>
+        <button @click="handleDisplay('projects')" :class="['rounded-xl w-36', props.currentSection === 'projects' ? 'bg-neutral-100 text-neutral-900' : '']">projects</button>
+        <button @click="handleDisplay('contact')" :class="['rounded-xl w-36', props.currentSection === 'contact' ? 'bg-neutral-100 text-neutral-900' : '']">contact</button>
       </div>
     </div>
   </div>

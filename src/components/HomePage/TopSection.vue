@@ -20,7 +20,7 @@ const toggleDark = useToggle(isDark);
   <div class="flex w-full h-screen bg-neutral-100 dark:bg-neutral-900">
     <div class="grid w-full grid-cols-12">
       <!-- light mode -->
-      <div class="col-span-full bg-toplight h-[100vh] grid grid-cols-12 text-neutral-900">
+      <div class="col-span-full bg-toplight h-[103vh] grid grid-cols-12 text-neutral-900">
         <div class="col-span-6 flex items-center justify-center">
           <div class="flex flex-col mt-10">
             <p class="font-semibold text-xl text-start">Hi, I am</p>

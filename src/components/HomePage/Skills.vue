@@ -16,26 +16,29 @@ const props = defineProps({
 const isDark = useDark();
 const toggleDark = useToggle(isDark);
 // اضافه کردن منطق انیمیشن اسکرول
-const sectionVisibility = ref(Array(12).fill(false)); // 5 بخش: توضیحات + 4 مهارت
+// انیمیشن بر اساس IntersectionObserver
+const sectionVisibility = ref([false, false, false, false, false, false, false, false, false, false, false, false]);
+const sectionRefs = ref([]); // ذخیرهٔ رفرنس هر المان
+let observer;
 
-const handleScroll = () => {
-  const sections = document.querySelectorAll(".animate-section");
-  sections.forEach((section, index) => {
-    const rect = section.getBoundingClientRect();
-    if (rect.top < window.innerHeight * 0.8 && !sectionVisibility.value[index]) {
-      sectionVisibility.value[index] = true; // بخش نمایش داده شده
-    }
-  });
-};
-
-// بقیه بدون تغییر
 onMounted(() => {
-  window.addEventListener("scroll", handleScroll);
-  handleScroll(); // بررسی اولیه
+  observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach(({ target, isIntersecting }) => {
+        const idx = sectionRefs.value.indexOf(target);
+        if (isIntersecting && idx >= 0) {
+          sectionVisibility.value[idx] = true;
+          observer.unobserve(target);
+        }
+      });
+    },
+    { threshold: 0.2 }
+  );
+  sectionRefs.value.forEach((el) => el && observer.observe(el));
 });
 
 onUnmounted(() => {
-  window.removeEventListener("scroll", handleScroll);
+  observer.disconnect();
 });
 </script>
 
@@ -48,7 +51,7 @@ onUnmounted(() => {
     <div class="col-span-full flex mt-20 justify-center mb-20">
       <div class="grid grid-cols-12 gap-16">
         <!-- Html -->
-        <div class="col-span-3 hover:!scale-110 transition-all duration-300 gap-4 flex flex-col justify-center items-center animate-section" :class="{ visible: sectionVisibility[0] }">
+        <div :ref="el => sectionRefs[0] = el" class="col-span-3 hover:!scale-110 transition-all duration-300 gap-4 flex flex-col justify-center items-center animate-section" :class="{ visible: sectionVisibility[0] }">
           <svg class="size-16" width="85" height="100" viewBox="0 0 85 100" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M0.015625 0L7.68491 90L42.1215 100L76.546 90.0062L84.2273 0H0.015625Z" fill="#FF5722" />
             <path
@@ -58,7 +61,7 @@ onUnmounted(() => {
           <p class="text-sm">HTML5</p>
         </div>
         <!-- Css -->
-        <div class="col-span-3 hover:!scale-110 transition-all duration-300 gap-4 flex flex-col justify-center items-center animate-section" :class="{ visible: sectionVisibility[1] }">
+        <div :ref="el => sectionRefs[1] = el" class="col-span-3 hover:!scale-110 transition-all duration-300 gap-4 flex flex-col justify-center items-center animate-section" :class="{ visible: sectionVisibility[1] }">
           <svg class="size-16" width="85" height="100" viewBox="0 0 85 100" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M0.00976562 0L7.67267 90L42.0806 100L76.4765 90.0062L84.1514 0H0.00976562Z" fill="#2196F3" />
             <path
@@ -69,7 +72,7 @@ onUnmounted(() => {
           <p class="text-sm">CSS3</p>
         </div>
         <!-- Vue -->
-        <div class="col-span-3 hover:!scale-110 transition-all duration-300 gap-4 flex flex-col justify-center items-center animate-section" :class="{ visible: sectionVisibility[2] }">
+        <div :ref="el => sectionRefs[2] = el" class="col-span-3 hover:!scale-110 transition-all duration-300 gap-4 flex flex-col justify-center items-center animate-section" :class="{ visible: sectionVisibility[2] }">
           <svg
             class="size-16"
             viewBox="0 -17.5 256 256"
@@ -92,7 +95,7 @@ onUnmounted(() => {
           <p class="text-sm">Vue</p>
         </div>
         <!-- java script -->
-        <div class="col-span-3 hover:!scale-110 transition-all duration-300 gap-4 flex flex-col justify-center items-center animate-section" :class="{ visible: sectionVisibility[3] }">
+        <div :ref="el => sectionRefs[3] = el" class="col-span-3 hover:!scale-110 transition-all duration-300 gap-4 flex flex-col justify-center items-center animate-section" :class="{ visible: sectionVisibility[3] }">
           <svg class="size-16" width="97" height="100" viewBox="0 0 97 100" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M0 0H96.242V100H0V0Z" fill="#F7DF1E" />
             <path
@@ -106,7 +109,7 @@ onUnmounted(() => {
           <p class="text-sm">JAVASCRIPT</p>
         </div>
         <!-- REACT -->
-        <div class="col-span-3 hover:!scale-110 transition-all duration-300 gap-4 flex flex-col justify-center items-center animate-section" :class="{ visible: sectionVisibility[4] }">
+        <div :ref="el => sectionRefs[4] = el" class="col-span-3 hover:!scale-110 transition-all duration-300 gap-4 flex flex-col justify-center items-center animate-section" :class="{ visible: sectionVisibility[4] }">
           <svg class="size-16" width="106" height="100" viewBox="0 0 106 100" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
               d="M0 49.5504C0 57.9044 7.80178 65.7033 20.1019 70.0992C17.6457 83.0286 19.6617 93.4496 26.3955 97.5103C33.3171 101.684 43.6286 98.7949 53.4155 89.8497C62.9556 98.4337 72.5975 101.812 79.325 97.7398C86.2399 93.5542 88.3432 82.4263 85.819 69.0933C98.6303 64.6644 105.797 58.0144 105.797 49.5504C105.797 41.39 97.9803 34.3302 85.846 29.9624C88.5634 16.0784 86.2609 5.91019 79.2484 1.68185C72.4877 -2.39453 62.7338 1.15845 53.0534 9.96729C42.9826 0.617401 33.325 -2.23724 26.3193 2.00343C19.5651 6.09141 17.6378 16.7018 20.1019 29.8706C8.21711 34.2034 0 41.4226 0 49.5504Z"
@@ -125,7 +128,7 @@ onUnmounted(() => {
           <p class="text-sm">REACT</p>
         </div>
         <!-- GIT -->
-        <div class="col-span-3 hover:!scale-110 transition-all duration-300 gap-4 flex flex-col justify-center items-center animate-section" :class="{ visible: sectionVisibility[5] }">
+        <div :ref="el => sectionRefs[5] = el" class="col-span-3 hover:!scale-110 transition-all duration-300 gap-4 flex flex-col justify-center items-center animate-section" :class="{ visible: sectionVisibility[5] }">
           <svg class="size-16" width="97" height="100" viewBox="0 0 97 100" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
             <rect width="96.242" height="100" fill="url(#pattern0_1_765)" />
             <defs>
@@ -144,7 +147,7 @@ onUnmounted(() => {
           <p class="text-sm">GIT</p>
         </div>
         <!-- Next.js -->
-        <div class="col-span-3 hover:!scale-110 transition-all duration-300 gap-4 flex flex-col justify-center items-center animate-section" :class="{ visible: sectionVisibility[6] }">
+        <div :ref="el => sectionRefs[6] = el" class="col-span-3 hover:!scale-110 transition-all duration-300 gap-4 flex flex-col justify-center items-center animate-section" :class="{ visible: sectionVisibility[6] }">
           <svg class="size-16" fill="#000000" viewBox="-2.4 -2.4 28.80 28.80" role="img" xmlns="http://www.w3.org/2000/svg" stroke="#000000">
             <g id="SVGRepo_bgCarrier" stroke-width="0" transform="translate(1.92,1.92), scale(0.84)">
               <rect x="-2.4" y="-2.4" width="28.80" height="28.80" rx="14.4" fill="#ffffff" strokewidth="0"></rect>
@@ -160,7 +163,7 @@ onUnmounted(() => {
           <p class="text-sm">Next.js</p>
         </div>
         <!-- FIGMA -->
-        <div class="col-span-3 hover:!scale-110 transition-all duration-300 gap-4 flex flex-col justify-center items-center animate-section" :class="{ visible: sectionVisibility[7] }">
+        <div :ref="el => sectionRefs[7] = el" class="col-span-3 hover:!scale-110 transition-all duration-300 gap-4 flex flex-col justify-center items-center animate-section" :class="{ visible: sectionVisibility[7] }">
           <svg class="size-16" width="70" height="100" viewBox="0 0 70 100" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g clip-path="url(#clip0_1_767)">
               <path
@@ -189,7 +192,7 @@ onUnmounted(() => {
           <p class="text-sm">FIGMA</p>
         </div>
         <!-- Tailwind Css -->
-        <div class="col-span-3 hover:!scale-110 transition-all duration-300 gap-4 flex flex-col justify-center items-center animate-section" :class="{ visible: sectionVisibility[8] }">
+        <div :ref="el => sectionRefs[8] = el" class="col-span-3 hover:!scale-110 transition-all duration-300 gap-4 flex flex-col justify-center items-center animate-section" :class="{ visible: sectionVisibility[8] }">
           <svg class="size-16 fill-neutral-900 dark:fill-neutral-100 stroke-neutral-900 dark:stroke-neutral-100" viewBox="-2.4 -2.4 28.80 28.80" xmlns="http://www.w3.org/2000/svg" xml:space="preserve">
             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
             <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
@@ -204,7 +207,7 @@ onUnmounted(() => {
           <p class="text-sm">Tailwind Css</p>
         </div>
         <!-- Vuetify -->
-        <div class="col-span-3 hover:!scale-110 transition-all duration-300 gap-4 flex flex-col justify-center items-center animate-section" :class="{ visible: sectionVisibility[9] }">
+        <div :ref="el => sectionRefs[9] = el" class="col-span-3 hover:!scale-110 transition-all duration-300 gap-4 flex flex-col justify-center items-center animate-section" :class="{ visible: sectionVisibility[9] }">
           <svg class="size-16" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="2.668 10.668 122.664 106.258" width="1em">
             <path d="m65.3 34.414-24.46 42.376 23.16 40.136 30.672-53.13 30.66-53.128h-46.332zm0 0" fill="#1697f6" />
             <path d="m33.34 63.797 1.605 2.793 22.88-39.649 9.402-16.273h-64.559zm0 0" fill="#aeddff" />
@@ -215,7 +218,7 @@ onUnmounted(() => {
           <p class="text-sm">Vuetify</p>
         </div>
         <!-- Material Ui -->
-        <div class="col-span-3 hover:!scale-110 transition-all duration-300 gap-4 flex flex-col justify-center items-center animate-section" :class="{ visible: sectionVisibility[10] }">
+        <div  :ref="el => sectionRefs[10] = el" class="col-span-3 hover:!scale-110 transition-all duration-300 gap-4 flex flex-col justify-center items-center animate-section" :class="{ visible: sectionVisibility[10] }">
           <svg
             class="size-16"
             viewBox="0 -26 256 256"
@@ -241,7 +244,7 @@ onUnmounted(() => {
           <p class="text-sm">MUI</p>
         </div>
         <!-- Swiper -->
-        <div class="col-span-3 hover:!scale-110 transition-all duration-300 gap-4 flex flex-col justify-center items-center animate-section" :class="{ visible: sectionVisibility[11] }">
+        <div :ref="el => sectionRefs[11] = el" class="col-span-3 hover:!scale-110 transition-all duration-300 gap-4 flex flex-col justify-center items-center animate-section" :class="{ visible: sectionVisibility[11] }">
           <svg class="size-16" xmlns="http://www.w3.org/2000/svg" width="129" height="129" viewBox="0 0 129 129">
             <path
               d="M97.5869496,9.51093626 C115.83804,20.7848256 128,40.9721238 128,64 C128,99.346224 99.346224,128 64,128 C56.2920179,128 48.9022945,126.637372 42.0606106,124.137797 L41.3296807,123.865645 L42.5199148,123.48344 L44.0499006,122.981598 L44.8047554,122.729449 L44.8047554,122.729449 L45.5528525,122.476476 L47.0287766,121.968044 L48.477679,121.456268 L49.8995657,120.941118 L51.2944429,120.422561 L51.9817549,120.161995 L53.3361292,119.638268 C54.7663971,119.077773 56.1505947,118.511327 57.4887554,117.938757 L58.4837445,117.508179 L59.7032082,116.966702 C60.2391997,116.725238 60.7672019,116.482694 61.2872173,116.239057 L62.0612505,115.87278 L63.1998411,115.320271 L63.7590314,115.042615 L63.7590314,115.042615 L64.3114862,114.76402 L65.3961918,114.203997 C74.5017145,109.427674 80.6883363,104.239002 83.9729034,98.5499653 C90.9321253,86.4962393 84.8542511,73.6150855 67.4065187,60.4830885 L65.9866432,59.4185495 L65.1241488,58.7570907 L64.2867532,58.1006716 L63.4743719,57.4492672 L62.6869203,56.8028527 L62.3025167,56.4815088 L62.3025167,56.4815088 L61.9243138,56.161403 L61.1864678,55.5248932 L60.6492814,55.0507377 L60.6492814,55.0507377 L60.1259396,54.5793364 L59.4496246,53.9550673 L58.7977741,53.3356509 L58.1703034,52.7210621 L57.865684,52.4155703 L57.865684,52.4155703 L57.5671278,52.1112761 L56.9881629,51.5062679 C50.0910281,44.1742986 48.550875,37.8976624 51.6821025,32.4742173 C53.275799,29.713854 56.0387768,26.999998 59.9662039,24.3569485 L60.4430842,24.040124 L61.1940488,23.5569049 C61.5336196,23.3425039 61.8809347,23.1285905 62.2359916,22.9151777 L62.7743828,22.5954356 L63.603739,22.1172522 L64.4592124,21.6408141 L65.1179529,21.2846511 L65.1179529,21.2846511 L65.7913778,20.9295026 L66.7121153,20.4575739 C67.4124544,20.1043216 68.1348104,19.7526404 68.8791706,19.4025938 L69.6308651,19.0530944 L70.6559388,18.5888147 L71.1782513,18.3574212 L72.2424237,17.8961475 L72.7842819,17.6662758 L73.887538,17.2080833 L74.4489343,16.9797709 L75.5912592,16.5247346 L76.1721862,16.2980192 L77.353565,15.8462143 L78.5609715,15.3966054 L79.174433,15.1726349 L80.4208685,14.7263826 L81.6933149,14.2824097 L82.9917658,13.8407497 L83.6507409,13.6207974 L84.9881859,13.1826691 L86.3516187,12.7469371 L87.7410327,12.3136347 L89.1564212,11.8827954 L90.5977776,11.4544525 L92.4359804,10.9225852 L94.3147346,10.394736 L96.6227494,9.76671243 L97.5869496,9.51093626 Z M64,0 C71.7830114,0 79.2415381,1.38928435 86.1411179,3.93339103 L86.8782091,4.21038217 L86.4108627,4.35186467 L84.1313124,5.0545346 L83.3848908,5.2905768 L81.9121853,5.76541455 L80.4663248,6.24395126 L79.0473024,6.72622031 L77.6551115,7.21225509 L76.2897456,7.70208898 L75.6171199,7.94844102 L73.9648828,8.56854028 L72.3545311,9.19471909 L71.0963985,9.70008321 L70.4773795,9.95425044 L69.2594321,10.4655761 C56.8123589,15.7699668 48.6548341,21.7176 44.7538993,28.4742173 C37.9453585,40.2669559 44.1208291,52.9796592 61.5702618,66.1081375 L62.9900625,67.1727537 L63.8522936,67.8346365 L64.6892575,68.491774 L65.09829,68.8185721 L65.8975078,69.468645 L66.4804703,69.9531308 L66.4804703,69.9531308 L67.0493707,70.4349994 L67.7860906,71.0734406 L68.1451248,71.3909334 L68.8445933,72.0224812 C69.2263095,72.3720718 69.5965761,72.7195512 69.9554568,73.0649416 L70.4852463,73.5814631 L71.248012,74.3504059 L71.9726186,75.1123909 C78.8402712,82.495364 80.3081527,88.8974997 77.0447002,94.5499653 C74.933031,98.2074836 70.9013706,101.807999 64.958951,105.303275 L64.4134675,105.620736 L63.5293583,106.121564 L62.6189315,106.620891 C62.1058295,106.897871 61.5805462,107.174142 61.0430864,107.449677 L60.227765,107.862426 L59.2252746,108.356245 L58.1964941,108.848418 L57.1414295,109.338914 L56.6040425,109.583523 L55.5095633,110.071443 L54.3888152,110.557607 L53.2418044,111.041982 L52.6584524,111.283488 L51.4720589,111.76512 L50.869019,112.005238 L50.869019,112.005238 L50.259418,112.244884 L49.0205357,112.722748 L47.755418,113.19868 L46.4640712,113.672647 L45.1465013,114.144619 L43.8027143,114.614564 L43.1209914,114.848766 L41.7378904,115.315609 L41.0365138,115.548243 L39.6141124,116.011914 L38.1655184,116.47343 L36.3179518,117.047246 L34.4294807,117.617582 L32.8892605,118.071305 L30.739698,118.689489 C12.3072163,107.455464 0,87.1649844 0,64 C0,28.653776 28.653776,0 64,0 Z"
