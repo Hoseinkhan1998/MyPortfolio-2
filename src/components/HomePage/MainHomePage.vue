@@ -7,14 +7,25 @@ import Skills from "./Skills.vue";
 import Projects from "./Projects.vue";
 import ContactMe from "./ContactMe.vue";
 import Footer from "./Footer.vue";
+import HeaderMob from "../HomePageMob/HeaderMob.vue";
+import TopSectionMob from "../HomePageMob/TopSectionMob.vue";
+import AboutMeMob from "../HomePageMob/AboutMeMob.vue";
+import SkillsMob from "../HomePageMob/SkillsMob.vue";
+import ProjectsMob from "../HomePageMob/ProjectsMob.vue";
+import ContactMeMob from "../HomePageMob/ContactMeMob.vue";
 
 const currentSection = ref("");
 // ۲) اسکرول ۲۰۰px بالاتر و ست کردن currentSection
 function handleDisplay(targetId) {
+  console.log("Target ID:", targetId);
   const el = document.getElementById(targetId);
   if (el) {
-    const top = el.getBoundingClientRect().top + window.scrollY;
-    window.scrollTo({ top: top - 100, behavior: "smooth" });
+    setTimeout(() => {
+      const top = el.getBoundingClientRect().top + window.scrollY;
+      window.scrollTo({ top: top - 100, behavior: "smooth" });
+    }, 300);
+  } else {
+    console.error("Element not found for ID:", targetId);
   }
 }
 
@@ -70,20 +81,40 @@ onUnmounted(() => {
         <Header :currentSection="currentSection" @handleDisplay="handleDisplay" />
       </div>
     </div>
+    <div class="col-span-full z-20 sticky top-0 lg:hidden block">
+      <div class="text-white px-5 py-4">
+        <HeaderMob :currentSection="currentSection" @handleDisplay="handleDisplay" />
+      </div>
+    </div>
     <div class="col-span-full lg:block hidden -mt-24">
       <TopSection @handleDisplay="handleDisplay" />
+    </div>
+    <div class="col-span-full lg:hidden block -mt-24">
+      <TopSectionMob @handleDisplay="handleDisplay" />
     </div>
     <div class="col-span-full lg:block hidden mt-24 mb-28 playtable" id="aboutMe">
       <AboutMe @handleDisplay="handleDisplay" />
     </div>
+    <div class="col-span-full lg:hidden block mt-24 playtable" id="aboutMe">
+      <AboutMeMob @handleDisplay="handleDisplay" />
+    </div>
     <div class="col-span-full lg:block hidden mb-28" id="skills">
       <Skills @handleDisplay="handleDisplay" />
+    </div>
+    <div class="col-span-full lg:hidden block " id="skills">
+      <SkillsMob @handleDisplay="handleDisplay" />
     </div>
     <div class="col-span-full lg:block hidden mb-28" id="projects">
       <Projects @handleDisplay="handleDisplay" />
     </div>
+    <div class="col-span-full lg:hidden block mb-28" id="projects">
+      <ProjectsMob @handleDisplay="handleDisplay" />
+    </div>
     <div class="col-span-full lg:block hidden mb-28" id="contact">
       <ContactMe @handleDisplay="handleDisplay" />
+    </div>
+    <div class="col-span-full lg:hidden block mb-28" id="contact">
+      <ContactMeMob @handleDisplay="handleDisplay" />
     </div>
     <div class="col-span-full " id="contact">
       <Footer @handleDisplay="handleDisplay" />

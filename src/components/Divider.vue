@@ -1,6 +1,6 @@
 <script setup></script>
 <template>
-  <div class="flex justify-center mt-28">
+  <div class="flex justify-center mt-28 mb-20">
     <svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="170.000000pt" height="12.000000pt" viewBox="0 0 170.000000 12.000000" preserveAspectRatio="xMidYMid meet">
       <g transform="translate(0.000000,12.000000) scale(0.100000,-0.100000)" fill="currentColor" stroke="none">
         <path d="M575 110 c-10 -17 86 -113 99 -100 7 7 -6 27 -41 61 -34 35 -53 47 -58 39z" />
