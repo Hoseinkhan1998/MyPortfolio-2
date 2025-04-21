@@ -17,13 +17,13 @@ const toggleDark = useToggle(isDark);
 </script>
 
 <template>
-  <div class="flex w-full h-screen bg-neutral-100 dark:bg-neutral-900">
-    <div class="grid w-full grid-cols-12">
+  <div class="flex w-full bg-neutral-100 dark:bg-neutral-900" style="height: 80vh;">
+    <div class="grid w-full grid-cols-12" style="height: 80vh;">
       <!-- light mode -->
-      <div class="col-span-full bg-neutral-100 dark:bg-neutral-900 h-[103vh] grid grid-cols-12 text-neutral-900">
+      <div class="col-span-full bg-neutral-100 dark:bg-neutral-900 grid grid-cols-12 text-neutral-900" style="height: 80vh;">
         <div class="col-span-full relative">
-          <img v-if="isDark" src="/images/mypic.png" class="h-[85vh] absolute bottom-0" alt="" />
-          <img v-if="!isDark" src="/images/mypicturelight.png" class="h-[85vh] absolute bottom-0" alt="" />
+          <img v-if="isDark" src="/images/mypic.png" class="absolute bottom-0 right-0" alt="" style="height: 70vh;" />
+          <img v-if="!isDark" src="/images/mypicturelight.png" class="absolute bottom-0 right-0" alt="" style="height: 70vh;" />
         </div>
       </div>
       <div class="bg-information relative col-span-full h-[50vh] -mt-[50vh] z-10">

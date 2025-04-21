@@ -39,9 +39,8 @@ const scrollToTop = () => {
   window.scrollTo({ top: 0, behavior: "smooth" });
 };
 
-
 // ۳) هنگام اسکرول دستی، بخش فعال رو تشخیص می‌دهیم
-const sectionIds = ["aboutMe", "skills", "projects", "contact"];
+const sectionIds = ["aboutMe", "skills", "projects", "contact", "aboutMeMob", "skillsMob", "projectsMob", "contactMob"];
 const handleScroll = () => {
   const playtableElement = document.querySelector(".playtable");
   if (playtableElement) {
@@ -86,37 +85,34 @@ onUnmounted(() => {
         <HeaderMob :currentSection="currentSection" @handleDisplay="handleDisplay" />
       </div>
     </div>
-    <div class="col-span-full lg:block hidden -mt-24">
-      <TopSection @handleDisplay="handleDisplay" />
-    </div>
-    <div class="col-span-full lg:hidden block -mt-24">
+    <div class="col-span-full lg:hidden block -mt-[12vh]" style="height: 80vh">
       <TopSectionMob @handleDisplay="handleDisplay" />
     </div>
     <div class="col-span-full lg:block hidden mt-24 mb-28 playtable" id="aboutMe">
       <AboutMe @handleDisplay="handleDisplay" />
     </div>
-    <div class="col-span-full lg:hidden block mt-24 playtable" id="aboutMe">
+    <div class="col-span-full lg:hidden block mt-24 playtable" id="aboutMeMob">
       <AboutMeMob @handleDisplay="handleDisplay" />
     </div>
     <div class="col-span-full lg:block hidden mb-28" id="skills">
       <Skills @handleDisplay="handleDisplay" />
     </div>
-    <div class="col-span-full lg:hidden block " id="skills">
+    <div class="col-span-full lg:hidden block" id="skillsMob">
       <SkillsMob @handleDisplay="handleDisplay" />
     </div>
     <div class="col-span-full lg:block hidden mb-28" id="projects">
       <Projects @handleDisplay="handleDisplay" />
     </div>
-    <div class="col-span-full lg:hidden block mb-28" id="projects">
+    <div class="col-span-full lg:hidden block mb-28" id="projectsMob">
       <ProjectsMob @handleDisplay="handleDisplay" />
     </div>
     <div class="col-span-full lg:block hidden mb-28" id="contact">
       <ContactMe @handleDisplay="handleDisplay" />
     </div>
-    <div class="col-span-full lg:hidden block mb-28" id="contact">
+    <div class="col-span-full lg:hidden block mb-28" id="contactMob">
       <ContactMeMob @handleDisplay="handleDisplay" />
     </div>
-    <div class="col-span-full " id="contact">
+    <div class="col-span-full" id="contact">
       <Footer @handleDisplay="handleDisplay" />
     </div>
   </div>

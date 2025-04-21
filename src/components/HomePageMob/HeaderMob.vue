@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted, onUnmounted, watch } from "vue";
 import { useDark, useToggle } from "@vueuse/core";
 
 const emit = defineEmits(["handleDisplay"]);
@@ -19,6 +19,28 @@ function toggleMenu() {
 
 const isDark = useDark();
 const toggleDark = useToggle(isDark);
+const menuRef = ref(null); // Ref برای منوی دراپ‌دون
+const buttonRef = ref(null); // Ref برای دکمه همبرگر
+
+function handleClickOutside(event) {
+  if (menuRef.value && !menuRef.value.contains(event.target) && buttonRef.value && !buttonRef.value.contains(event.target)) {
+    isMenuOpen.value = false;
+  }
+}
+
+// اضافه کردن و حذف event listener هنگام باز/بسته شدن منو
+watch(isMenuOpen, (isOpen) => {
+  if (isOpen) {
+    document.addEventListener("click", handleClickOutside);
+  } else {
+    document.removeEventListener("click", handleClickOutside);
+  }
+});
+
+// حذف event listener هنگام unmount شدن کامپوننت
+onUnmounted(() => {
+  document.removeEventListener("click", handleClickOutside);
+});
 </script>
 
 <template>
@@ -26,7 +48,7 @@ const toggleDark = useToggle(isDark);
     <div class="col-span-6">
       <div class="flex justify-start">
         <div class="cursor-pointer text-neutral-900 dark:text-neutral-100">
-          <label class="swap swap-rotate">
+          <label class="swap !z-30 swap-rotate">
             <!-- this hidden checkbox controls the state -->
             <input type="checkbox" @click="toggleDark()" />
 
@@ -48,7 +70,7 @@ const toggleDark = useToggle(isDark);
     <div class="col-span-6 flex justify-end">
       <div class="relative">
         <!-- تغییر در دکمه همبرگر -->
-        <button class="btn btn-circle swap swap-rotate" @click="toggleMenu">
+        <button ref="buttonRef" class="mt-2 z-30 text-neutral-900 dark:text-neutral-100 swap swap-rotate" @click="toggleMenu">
           <input type="checkbox" :checked="isMenuOpen" />
           <!-- آیکون همبرگر -->
           <svg class="swap-off fill-current" xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 512 512">
@@ -61,47 +83,72 @@ const toggleDark = useToggle(isDark);
         </button>
 
         <!-- منوی دراپ‌دون -->
-        <div
-          v-if="isMenuOpen"
-          class="absolute right-0 mt-2 w-48 origin-top-right rounded-md bg-white dark:bg-neutral-800 shadow-lg ring-1 ring-black ring-opacity-5 transition-all duration-300 ease-out">
-          <div class="py-1">
-            <button
-              @click="
-                handleDisplay('aboutMe');
-                toggleMenu();
-              "
-              class="block w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-neutral-700">
-              about me
-            </button>
-            <button
-              @click="
-                handleDisplay('skills');
-                toggleMenu();
-              "
-              class="block w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-neutral-700">
-              skills
-            </button>
-            <button
-              @click="
-                handleDisplay('projects');
-                toggleMenu();
-              "
-              class="block w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-neutral-700">
-              projects
-            </button>
-            <button
-              @click="
-                handleDisplay('contact');
-                toggleMenu();
-              "
-              class="block w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-neutral-700">
-              contact
-            </button>
+        <Transition name="menu">
+          <div
+            v-if="isMenuOpen"
+            ref="menuRef"
+            class="fixed top-0 left-0 right-0 text-neutral-900 dark:text-neutral-100 bg-neutral-100 text-center flex justify-center dark:bg-neutral-800 shadow-lg ring-1 ring-black ring-opacity-5 transition-all duration-300 ease-out z-10">
+            <div class="pt-20 pb-5 text-2xl text-center flex flex-col justify-center">
+              <button
+                @click="
+                  handleDisplay('aboutMeMob');
+                  toggleMenu();
+                "
+                :class="['rounded-xl w-36', props.currentSection === 'aboutMeMob' ? 'bg-neutral-100 text-neutral-900' : '']"
+                class="block capitalize text-center w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-neutral-700">
+                about me
+              </button>
+              <button
+                @click="
+                  handleDisplay('skillsMob');
+                  toggleMenu();
+                "
+                :class="['rounded-xl w-36', props.currentSection === 'skillsMob' ? 'bg-neutral-100 text-neutral-900' : '']"
+                class="block capitalize w-full text-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-neutral-700">
+                skills
+              </button>
+              <button
+                @click="
+                  handleDisplay('projectsMob');
+                  toggleMenu();
+                "
+                :class="['rounded-xl w-36', props.currentSection === 'projectsMob' ? 'bg-neutral-100 text-neutral-900' : '']"
+                class="block capitalize w-full text-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-neutral-700">
+                projects
+              </button>
+              <button
+                @click="
+                  handleDisplay('contactMob');
+                  toggleMenu();
+                "
+                :class="['rounded-xl w-36', props.currentSection === 'contactMob' ? 'bg-neutral-100 text-neutral-900' : '']"
+                class="block capitalize w-full text-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-neutral-700">
+                contact
+              </button>
+            </div>
           </div>
-        </div>
+        </Transition>
       </div>
     </div>
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+/* انیمیشن باز شدن منو */
+.menu-enter-active,
+.menu-leave-active {
+  transition: transform 0.3s ease-out, opacity 0.2s ease-out;
+}
+
+.menu-enter-from,
+.menu-leave-to {
+  transform: translateY(-70px);
+  opacity: 0;
+}
+
+.menu-enter-to,
+.menu-leave-from {
+  transform: translateY(0);
+  opacity: 1;
+}
+</style>

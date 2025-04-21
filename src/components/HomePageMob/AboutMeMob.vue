@@ -16,25 +16,28 @@ const props = defineProps({
 const isDark = useDark();
 const toggleDark = useToggle(isDark);
 // اضافه کردن منطق انیمیشن اسکرول
-const sectionVisibility = ref([false, false, false, false, false]); // 5 بخش: توضیحات + 4 مهارت
-
-const handleScroll = () => {
-  const sections = document.querySelectorAll(".animate-section");
-  sections.forEach((section, index) => {
-    const rect = section.getBoundingClientRect();
-    if (rect.top < window.innerHeight * 0.8 && !sectionVisibility.value[index]) {
-      sectionVisibility.value[index] = true; // بخش نمایش داده شده
-    }
-  });
-};
+const sectionVisibility = ref([false, false, false, false, false]);
+const sectionRefs = ref([]); // ذخیرهٔ رفرنس هر المان
+let observer;
 
 onMounted(() => {
-  window.addEventListener("scroll", handleScroll);
-  handleScroll(); // بررسی اولیه
+  observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach(({ target, isIntersecting }) => {
+        const idx = sectionRefs.value.indexOf(target);
+        if (isIntersecting && idx >= 0) {
+          sectionVisibility.value[idx] = true;
+          observer.unobserve(target);
+        }
+      });
+    },
+    { threshold: 0.2 }
+  );
+  sectionRefs.value.forEach((el) => el && observer.observe(el));
 });
 
 onUnmounted(() => {
-  window.removeEventListener("scroll", handleScroll);
+  observer.disconnect();
 });
 </script>
 
@@ -47,7 +50,7 @@ onUnmounted(() => {
     </div>
     <div class="col-span-full mt-10">
       <div class="flex justify-center px-5">
-        <div class="w-full text-center animate-section" :class="{ visible: sectionVisibility[0] }">
+        <div class="w-full text-center animate-section" :ref="(el) => (sectionRefs[0] = el)" :class="{ visible: sectionVisibility[0] }">
           <p>
             a 26-year-old Front-End Developer with a passion for clean code and creative user interfaces. With one year of hands-on experience and three years of coding journey, I
             thrive on solving problems and debugging with precision. I'm a responsible and curious developer who truly loves learning and building.
@@ -63,7 +66,7 @@ onUnmounted(() => {
     <div class="col-span-full flex items-center justify-center">
       <div class="grid w-full grid-cols-12 gap-y-10 px-5">
         <!-- Clean Code & Bug Fixing -->
-        <div class="col-span-full mt-10 animate-section" :class="{ visible: sectionVisibility[1] }">
+        <div class="col-span-full mt-10 animate-section" :ref="(el) => (sectionRefs[1] = el)" :class="{ visible: sectionVisibility[1] }">
           <div class="flex flex-col items-start">
             <div class="flex items-center gap-2">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-12 opacity-15">
@@ -80,7 +83,7 @@ onUnmounted(() => {
           </div>
         </div>
         <!-- Precision Implementation -->
-        <div class="col-span-full mt-10 animate-section" :class="{ visible: sectionVisibility[2] }">
+        <div class="col-span-full mt-10 animate-section" :ref="(el) => (sectionRefs[2] = el)" :class="{ visible: sectionVisibility[2] }">
           <div class="flex flex-col items-start">
             <div class="flex items-center gap-2">
               <svg
@@ -104,7 +107,7 @@ onUnmounted(() => {
           </div>
         </div>
         <!-- Dedicated Development -->
-        <div class="col-span-full mt-10 animate-section" :class="{ visible: sectionVisibility[3] }">
+        <div class="col-span-full mt-10 animate-section" :ref="(el) => (sectionRefs[3] = el)" :class="{ visible: sectionVisibility[3] }">
           <div class="flex flex-col items-start">
             <div class="flex items-center gap-2">
               <svg class="size-12 fill-current opacity-15" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" viewBox="0 0 50 50">
@@ -119,22 +122,22 @@ onUnmounted(() => {
           </div>
         </div>
         <!-- AI-Driven Solutions -->
-        <div class="col-span-full mt-10 animate-section" :class="{ visible: sectionVisibility[4] }">
-            <div class="flex flex-col items-start">
-              <div class="flex items-center gap-2">
-                <svg class=" fill-neutral-900 dark:fill-neutral-100 size-12 opacity-15" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="50" height="50" viewBox="0 0 50 50">
-                  <path
-                    d="M45.403,25.562c-0.506-1.89-1.518-3.553-2.906-4.862c1.134-2.665,0.963-5.724-0.487-8.237	c-1.391-2.408-3.636-4.131-6.322-4.851c-1.891-0.506-3.839-0.462-5.669,0.088C28.276,5.382,25.562,4,22.647,4	c-4.906,0-9.021,3.416-10.116,7.991c-0.01,0.001-0.019-0.003-0.029-0.002c-2.902,0.36-5.404,2.019-6.865,4.549	c-1.391,2.408-1.76,5.214-1.04,7.9c0.507,1.891,1.519,3.556,2.909,4.865c-1.134,2.666-0.97,5.714,0.484,8.234	c1.391,2.408,3.636,4.131,6.322,4.851c0.896,0.24,1.807,0.359,2.711,0.359c1.003,0,1.995-0.161,2.957-0.45	C21.722,44.619,24.425,46,27.353,46c4.911,0,9.028-3.422,10.12-8.003c2.88-0.35,5.431-2.006,6.891-4.535	C45.754,31.054,46.123,28.248,45.403,25.562z M35.17,9.543c2.171,0.581,3.984,1.974,5.107,3.919c1.049,1.817,1.243,4,0.569,5.967	c-0.099-0.062-0.193-0.131-0.294-0.19l-9.169-5.294c-0.312-0.179-0.698-0.177-1.01,0.006l-10.198,6.041l-0.052-4.607l8.663-5.001	C30.733,9.26,33,8.963,35.17,9.543z M29.737,22.195l0.062,5.504l-4.736,2.805l-4.799-2.699l-0.062-5.504l4.736-2.805L29.737,22.195z M14.235,14.412C14.235,9.773,18.009,6,22.647,6c2.109,0,4.092,0.916,5.458,2.488C28,8.544,27.891,8.591,27.787,8.651l-9.17,5.294	c-0.312,0.181-0.504,0.517-0.5,0.877l0.133,11.851l-4.015-2.258V14.412z M6.528,23.921c-0.581-2.17-0.282-4.438,0.841-6.383	c1.06-1.836,2.823-3.074,4.884-3.474c-0.004,0.116-0.018,0.23-0.018,0.348V25c0,0.361,0.195,0.694,0.51,0.872l10.329,5.81	L19.11,34.03l-8.662-5.002C8.502,27.905,7.11,26.092,6.528,23.921z M14.83,40.457c-2.171-0.581-3.984-1.974-5.107-3.919	c-1.053-1.824-1.249-4.001-0.573-5.97c0.101,0.063,0.196,0.133,0.299,0.193l9.169,5.294c0.154,0.089,0.327,0.134,0.5,0.134	c0.177,0,0.353-0.047,0.51-0.14l10.198-6.041l0.052,4.607l-8.663,5.001C19.269,40.741,17.001,41.04,14.83,40.457z M35.765,35.588	c0,4.639-3.773,8.412-8.412,8.412c-2.119,0-4.094-0.919-5.459-2.494c0.105-0.056,0.216-0.098,0.32-0.158l9.17-5.294	c0.312-0.181,0.504-0.517,0.5-0.877L31.75,23.327l4.015,2.258V35.588z M42.631,32.462c-1.056,1.83-2.84,3.086-4.884,3.483	c0.004-0.12,0.018-0.237,0.018-0.357V25c0-0.361-0.195-0.694-0.51-0.872l-10.329-5.81l3.964-2.348l8.662,5.002	c1.946,1.123,3.338,2.937,3.92,5.107C44.053,28.249,43.754,30.517,42.631,32.462z"></path>
-                </svg>
-                <p class="text-xl font-semibold capitalize">AI-Driven Solutions</p>
-              </div>
-              <p class="text-start text-sm mt-3">
-                I'm skilled in leveraging Artificial Intelligence to enhance my development process. From crafting precise prompts to using AI for bug fixing, I understand how to
-                harness its power effectively to streamline projects and deliver top-quality results.
-              </p>
+        <div class="col-span-full mt-10 animate-section" :ref="(el) => (sectionRefs[4] = el)" :class="{ visible: sectionVisibility[4] }">
+          <div class="flex flex-col items-start">
+            <div class="flex items-center gap-2">
+              <svg class="fill-neutral-900 dark:fill-neutral-100 size-12 opacity-15" xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="50" height="50" viewBox="0 0 50 50">
+                <path
+                  d="M45.403,25.562c-0.506-1.89-1.518-3.553-2.906-4.862c1.134-2.665,0.963-5.724-0.487-8.237	c-1.391-2.408-3.636-4.131-6.322-4.851c-1.891-0.506-3.839-0.462-5.669,0.088C28.276,5.382,25.562,4,22.647,4	c-4.906,0-9.021,3.416-10.116,7.991c-0.01,0.001-0.019-0.003-0.029-0.002c-2.902,0.36-5.404,2.019-6.865,4.549	c-1.391,2.408-1.76,5.214-1.04,7.9c0.507,1.891,1.519,3.556,2.909,4.865c-1.134,2.666-0.97,5.714,0.484,8.234	c1.391,2.408,3.636,4.131,6.322,4.851c0.896,0.24,1.807,0.359,2.711,0.359c1.003,0,1.995-0.161,2.957-0.45	C21.722,44.619,24.425,46,27.353,46c4.911,0,9.028-3.422,10.12-8.003c2.88-0.35,5.431-2.006,6.891-4.535	C45.754,31.054,46.123,28.248,45.403,25.562z M35.17,9.543c2.171,0.581,3.984,1.974,5.107,3.919c1.049,1.817,1.243,4,0.569,5.967	c-0.099-0.062-0.193-0.131-0.294-0.19l-9.169-5.294c-0.312-0.179-0.698-0.177-1.01,0.006l-10.198,6.041l-0.052-4.607l8.663-5.001	C30.733,9.26,33,8.963,35.17,9.543z M29.737,22.195l0.062,5.504l-4.736,2.805l-4.799-2.699l-0.062-5.504l4.736-2.805L29.737,22.195z M14.235,14.412C14.235,9.773,18.009,6,22.647,6c2.109,0,4.092,0.916,5.458,2.488C28,8.544,27.891,8.591,27.787,8.651l-9.17,5.294	c-0.312,0.181-0.504,0.517-0.5,0.877l0.133,11.851l-4.015-2.258V14.412z M6.528,23.921c-0.581-2.17-0.282-4.438,0.841-6.383	c1.06-1.836,2.823-3.074,4.884-3.474c-0.004,0.116-0.018,0.23-0.018,0.348V25c0,0.361,0.195,0.694,0.51,0.872l10.329,5.81	L19.11,34.03l-8.662-5.002C8.502,27.905,7.11,26.092,6.528,23.921z M14.83,40.457c-2.171-0.581-3.984-1.974-5.107-3.919	c-1.053-1.824-1.249-4.001-0.573-5.97c0.101,0.063,0.196,0.133,0.299,0.193l9.169,5.294c0.154,0.089,0.327,0.134,0.5,0.134	c0.177,0,0.353-0.047,0.51-0.14l10.198-6.041l0.052,4.607l-8.663,5.001C19.269,40.741,17.001,41.04,14.83,40.457z M35.765,35.588	c0,4.639-3.773,8.412-8.412,8.412c-2.119,0-4.094-0.919-5.459-2.494c0.105-0.056,0.216-0.098,0.32-0.158l9.17-5.294	c0.312-0.181,0.504-0.517,0.5-0.877L31.75,23.327l4.015,2.258V35.588z M42.631,32.462c-1.056,1.83-2.84,3.086-4.884,3.483	c0.004-0.12,0.018-0.237,0.018-0.357V25c0-0.361-0.195-0.694-0.51-0.872l-10.329-5.81l3.964-2.348l8.662,5.002	c1.946,1.123,3.338,2.937,3.92,5.107C44.053,28.249,43.754,30.517,42.631,32.462z"></path>
+              </svg>
+              <p class="text-xl font-semibold capitalize">AI-Driven Solutions</p>
             </div>
+            <p class="text-start text-sm mt-3">
+              I'm skilled in leveraging Artificial Intelligence to enhance my development process. From crafting precise prompts to using AI for bug fixing, I understand how to
+              harness its power effectively to streamline projects and deliver top-quality results.
+            </p>
           </div>
         </div>
+      </div>
     </div>
     <div class="col-span-full mb-20">
       <div class="flex justify-center">
