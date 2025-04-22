@@ -85,6 +85,9 @@ onUnmounted(() => {
         <HeaderMob :currentSection="currentSection" @handleDisplay="handleDisplay" />
       </div>
     </div>
+    <div class="col-span-full lg:block hidden -mt-24">
+      <TopSection @handleDisplay="handleDisplay" />
+    </div>
     <div class="col-span-full lg:hidden block -mt-[12vh]" style="height: 80vh">
       <TopSectionMob @handleDisplay="handleDisplay" />
     </div>
