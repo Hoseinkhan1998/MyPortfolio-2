@@ -38,10 +38,10 @@ onUnmounted(() => {
 
 const projects = [
   {
-    skills: ["NEXT.JS", "React", "Tailwind", "Framer Motion"],
-    img: "project2.png",
+    skills: ["vue", "daisyui", "vuetify", "Tailwind", "Swiper"],
+    img: "mywebsite.png",
     link: "https://www.hoseinmazinani.ir",
-    description: "Hossein's interactive CV built with Next.js and subtle animations in React & Tailwind.",
+    description: "a CV website for Hosein Mazinani, showcasing my skills using Vue.js and Tailwind CSS. The site highlights my expertise and experience in a clean and modern design.",
   },
   {
     skills: ["React", "Tailwind", "Syncfusion", "Eslint"],
