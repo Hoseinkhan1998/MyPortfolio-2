@@ -13,15 +13,15 @@ const props = defineProps({});
 
 const isDark = useDark();
 const toggleDark = useToggle(isDark);
-// اضافه کردن منطق انیمیشن اسکرول
-const sectionVisibility = ref(Array(12).fill(false)); // 5 بخش: توضیحات + 4 مهارت
 
 const handleScroll = () => {
-  const sections = document.querySelectorAll(".animate-section");
-  sections.forEach((section, index) => {
-    const rect = section.getBoundingClientRect();
-    if (rect.top < window.innerHeight * 0.8 && !sectionVisibility.value[index]) {
-      sectionVisibility.value[index] = true; // بخش نمایش داده شده
+  const cards = document.querySelectorAll(".project-card");
+
+  cards.forEach((card, index) => {
+    const rect = card.getBoundingClientRect();
+
+    if (rect.top < window.innerHeight * 0.82 && rect.bottom > 0 && !sectionVisibility.value[index]) {
+      sectionVisibility.value[index] = true;
     }
   });
 };
@@ -38,54 +38,59 @@ onUnmounted(() => {
 
 const projects = [
   {
+    skills: ["Nuxt 4", "TypeScript", "Supabase", "Pinia", "Nuxt Image", "Tailwind 4"],
+    img: "mazzinshop.webp",
+    link: "https://mazzinshop.ir",
+    description:
+      "A modern e-commerce platform built with Nuxt 4 and TypeScript, featuring a powerful product search engine, category-based filtering, Supabase integration, Pinia state management, optimized images with Nuxt Image, and a clean responsive UI powered by Tailwind CSS.",
+  },
+  {
+    skills: ["React", "TypeScript", "AI Analysis", "React Query", "Supabase", "Framer Motion", "Zod", "Medical Imaging"],
+    img: "lab-ai.webp",
+    link: "https://app.snapcyte.com",
+    description:
+      "AI-powered laboratory platform developed for a Canadian company, focused on scientific image processing and life science data analysis. Features advanced medical image interpretation, AI-assisted workflows, custom model integration, efficient state management with React Query, and interactive UI components for research environments.",
+  },
+  {
     skills: ["vue", "daisyui", "vuetify", "Tailwind", "Swiper"],
-    img: "mywebsite.png",
+    img: "mywebsite.webp",
     link: "https://www.hoseinmazinani.ir",
-    description: "a CV website for Hosein Mazinani, showcasing my skills using Vue.js and Tailwind CSS. The site highlights my expertise and experience in a clean and modern design.",
+    description:
+      "a CV website for Hosein Mazinani, showcasing my skills using Vue.js and Tailwind CSS. The site highlights my expertise and experience in a clean and modern design.",
   },
   {
     skills: ["React", "Tailwind", "Syncfusion", "Eslint"],
-    img: "dashboard.png",
+    img: "dashboard.webp",
     link: "https://dashboard-five-flax.vercel.app/",
     description: "Data-rich React dashboard built with Syncfusion components and styled with Tailwind CSS.",
   },
   {
     skills: ["NEXT.JS", "React", "Mongo db", "SWR", "Html&Css"],
-    img: "event.png",
+    img: "event.webp",
     link: "https://nextjs-tutorial-coral-three.vercel.app/",
     description: "Dynamic event list app built using Next.js, React, MongoDB, and SWR for data management.",
   },
   {
     skills: ["React", "MUI", "Axios", "Emotion"],
-    img: "clone.png",
+    img: "clone.webp",
     link: "https://youtube-clone-xi-five.vercel.app/",
     description: "YouTube clone app built in React with MUI for a sleek UI and Axios for data management.",
   },
   {
-    skills: ["React", "Tailwind", "Redux", "Next.js"],
-    img: "shoppingcard.png",
-    link: "https://shopping-card-coral.vercel.app/",
-    description: "Interactive shopping cart built with Next.js, React and Redux for state management.",
-  },
-  {
-    skills: ["mui-tel", "MUI", "React", "Tailwind", "swipeable views"],
-    img: "fintech.png",
-    link: "https://fintech-mobile-app-psi.vercel.app/",
-    description: "A mobile fintech app built with React & MUI, inspired by Figma, featuring swipeable views.",
-  },
-  {
     skills: ["vue", "daisyui", "vuetify", "Tailwind", "Swiper"],
-    img: "octopus.png",
+    img: "octopus.webp",
     link: "https://octopus-website-ten.vercel.app/",
     description: "Octopus Company website to introduce the company and the modules they offer.",
   },
   {
     skills: ["vue", "daisyui", "vuetify", "Tailwind", "Swiper"],
-    img: "yekmovie.png",
+    img: "yekmovie.webp",
     link: "https://yek-movie-hosein-khan.vercel.app/",
     description: "A Persian site for downloading the latest movies and series.",
   },
 ];
+
+const sectionVisibility = ref(projects.map(() => false));
 </script>
 
 <template>
@@ -96,7 +101,11 @@ const projects = [
     <!-- skils -->
     <div class="col-span-full mt-20 flex justify-center">
       <div class="container">
-        <div v-for="(project, index) in projects" :key="index" class="w-full rounded-[10px] bg-neutral-300 shadow-lg shadow-neutral-400 dark:shadow-neutral-800 dark:bg-neutral-800">
+        <div
+          v-for="(project, index) in projects"
+          :key="index"
+          class="project-card w-full rounded-[10px] bg-neutral-300 shadow-lg shadow-neutral-400 dark:shadow-neutral-800 dark:bg-neutral-800"
+          :class="[index % 2 === 0 ? 'project-card-right' : 'project-card-left', sectionVisibility[index] ? 'project-card-visible' : '']">
           <div class="skill1" :style="{ backgroundImage: `url(/images/${project.img})` }">
             <div class="content w-full flex flex-col px-6">
               <div class="flex flex-wrap justify-center gap-2" style="padding: 15% 12%; height: 200px">
@@ -132,15 +141,25 @@ const projects = [
 </template>
 
 <style scoped>
-.animate-section {
+.project-card {
   opacity: 0;
-  transform: translateY(50px);
-  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  transition:
+    opacity 0.9s ease,
+    transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
 }
 
-.animate-section.visible {
+.project-card-right {
+  transform: translateX(160px);
+}
+
+.project-card-left {
+  transform: translateX(-160px);
+}
+
+.project-card-visible {
   opacity: 1;
-  transform: translateY(0);
+  transform: translateX(0);
 }
 
 .container {
@@ -154,6 +173,15 @@ const projects = [
   .container {
     display: flex;
     flex-direction: column;
+  }
+
+  .project-card-right,
+  .project-card-left {
+    transform: translateY(40px);
+  }
+
+  .project-card-visible {
+    transform: translateY(0);
   }
 }
 

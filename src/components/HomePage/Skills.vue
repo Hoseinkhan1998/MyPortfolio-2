@@ -15,10 +15,9 @@ const props = defineProps({
 
 const isDark = useDark();
 const toggleDark = useToggle(isDark);
-// اضافه کردن منطق انیمیشن اسکرول
-// انیمیشن بر اساس IntersectionObserver
-const sectionVisibility = ref([false, false, false, false, false, false, false, false, false, false, false, false]);
-const sectionRefs = ref([]); // ذخیرهٔ رفرنس هر المان
+
+const sectionVisibility = ref(Array(16).fill(false));
+const sectionRefs = ref([]); 
 let observer;
 
 onMounted(() => {
@@ -32,7 +31,7 @@ onMounted(() => {
         }
       });
     },
-    { threshold: 0.2 }
+    { threshold: 0.2 },
   );
   sectionRefs.value.forEach((el) => el && observer.observe(el));
 });
@@ -51,7 +50,10 @@ onUnmounted(() => {
     <div class="col-span-full flex mt-20 justify-center mb-20">
       <div class="grid grid-cols-12 gap-16">
         <!-- Html -->
-        <div :ref="el => sectionRefs[0] = el" class="col-span-3 hover:!scale-110 transition-all duration-300 gap-4 flex flex-col justify-center items-center animate-section" :class="{ visible: sectionVisibility[0] }">
+        <div
+          :ref="(el) => (sectionRefs[0] = el)"
+          class="col-span-3 hover:!scale-110 transition-all duration-300 gap-4 flex flex-col justify-center items-center animate-section"
+          :class="{ visible: sectionVisibility[0] }">
           <svg class="size-16" width="85" height="100" viewBox="0 0 85 100" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M0.015625 0L7.68491 90L42.1215 100L76.546 90.0062L84.2273 0H0.015625Z" fill="#FF5722" />
             <path
@@ -61,7 +63,10 @@ onUnmounted(() => {
           <p class="text-sm">HTML5</p>
         </div>
         <!-- Css -->
-        <div :ref="el => sectionRefs[1] = el" class="col-span-3 hover:!scale-110 transition-all duration-300 gap-4 flex flex-col justify-center items-center animate-section" :class="{ visible: sectionVisibility[1] }">
+        <div
+          :ref="(el) => (sectionRefs[1] = el)"
+          class="col-span-3 hover:!scale-110 transition-all duration-300 gap-4 flex flex-col justify-center items-center animate-section"
+          :class="{ visible: sectionVisibility[1] }">
           <svg class="size-16" width="85" height="100" viewBox="0 0 85 100" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M0.00976562 0L7.67267 90L42.0806 100L76.4765 90.0062L84.1514 0H0.00976562Z" fill="#2196F3" />
             <path
@@ -72,7 +77,10 @@ onUnmounted(() => {
           <p class="text-sm">CSS3</p>
         </div>
         <!-- Vue -->
-        <div :ref="el => sectionRefs[2] = el" class="col-span-3 hover:!scale-110 transition-all duration-300 gap-4 flex flex-col justify-center items-center animate-section" :class="{ visible: sectionVisibility[2] }">
+        <div
+          :ref="(el) => (sectionRefs[2] = el)"
+          class="col-span-3 hover:!scale-110 transition-all duration-300 gap-4 flex flex-col justify-center items-center animate-section"
+          :class="{ visible: sectionVisibility[2] }">
           <svg
             class="size-16"
             viewBox="0 -17.5 256 256"
@@ -95,7 +103,10 @@ onUnmounted(() => {
           <p class="text-sm">Vue</p>
         </div>
         <!-- java script -->
-        <div :ref="el => sectionRefs[3] = el" class="col-span-3 hover:!scale-110 transition-all duration-300 gap-4 flex flex-col justify-center items-center animate-section" :class="{ visible: sectionVisibility[3] }">
+        <div
+          :ref="(el) => (sectionRefs[3] = el)"
+          class="col-span-3 hover:!scale-110 transition-all duration-300 gap-4 flex flex-col justify-center items-center animate-section"
+          :class="{ visible: sectionVisibility[3] }">
           <svg class="size-16" width="97" height="100" viewBox="0 0 97 100" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M0 0H96.242V100H0V0Z" fill="#F7DF1E" />
             <path
@@ -109,7 +120,10 @@ onUnmounted(() => {
           <p class="text-sm">JAVASCRIPT</p>
         </div>
         <!-- REACT -->
-        <div :ref="el => sectionRefs[4] = el" class="col-span-3 hover:!scale-110 transition-all duration-300 gap-4 flex flex-col justify-center items-center animate-section" :class="{ visible: sectionVisibility[4] }">
+        <div
+          :ref="(el) => (sectionRefs[4] = el)"
+          class="col-span-3 hover:!scale-110 transition-all duration-300 gap-4 flex flex-col justify-center items-center animate-section"
+          :class="{ visible: sectionVisibility[4] }">
           <svg class="size-16" width="106" height="100" viewBox="0 0 106 100" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
               d="M0 49.5504C0 57.9044 7.80178 65.7033 20.1019 70.0992C17.6457 83.0286 19.6617 93.4496 26.3955 97.5103C33.3171 101.684 43.6286 98.7949 53.4155 89.8497C62.9556 98.4337 72.5975 101.812 79.325 97.7398C86.2399 93.5542 88.3432 82.4263 85.819 69.0933C98.6303 64.6644 105.797 58.0144 105.797 49.5504C105.797 41.39 97.9803 34.3302 85.846 29.9624C88.5634 16.0784 86.2609 5.91019 79.2484 1.68185C72.4877 -2.39453 62.7338 1.15845 53.0534 9.96729C42.9826 0.617401 33.325 -2.23724 26.3193 2.00343C19.5651 6.09141 17.6378 16.7018 20.1019 29.8706C8.21711 34.2034 0 41.4226 0 49.5504Z"
@@ -128,7 +142,10 @@ onUnmounted(() => {
           <p class="text-sm">REACT</p>
         </div>
         <!-- GIT -->
-        <div :ref="el => sectionRefs[5] = el" class="col-span-3 hover:!scale-110 transition-all duration-300 gap-4 flex flex-col justify-center items-center animate-section" :class="{ visible: sectionVisibility[5] }">
+        <div
+          :ref="(el) => (sectionRefs[5] = el)"
+          class="col-span-3 hover:!scale-110 transition-all duration-300 gap-4 flex flex-col justify-center items-center animate-section"
+          :class="{ visible: sectionVisibility[5] }">
           <svg class="size-16" width="97" height="100" viewBox="0 0 97 100" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
             <rect width="96.242" height="100" fill="url(#pattern0_1_765)" />
             <defs>
@@ -147,7 +164,10 @@ onUnmounted(() => {
           <p class="text-sm">GIT</p>
         </div>
         <!-- Next.js -->
-        <div :ref="el => sectionRefs[6] = el" class="col-span-3 hover:!scale-110 transition-all duration-300 gap-4 flex flex-col justify-center items-center animate-section" :class="{ visible: sectionVisibility[6] }">
+        <div
+          :ref="(el) => (sectionRefs[6] = el)"
+          class="col-span-3 hover:!scale-110 transition-all duration-300 gap-4 flex flex-col justify-center items-center animate-section"
+          :class="{ visible: sectionVisibility[6] }">
           <svg class="size-16" fill="#000000" viewBox="-2.4 -2.4 28.80 28.80" role="img" xmlns="http://www.w3.org/2000/svg" stroke="#000000">
             <g id="SVGRepo_bgCarrier" stroke-width="0" transform="translate(1.92,1.92), scale(0.84)">
               <rect x="-2.4" y="-2.4" width="28.80" height="28.80" rx="14.4" fill="#ffffff" strokewidth="0"></rect>
@@ -163,7 +183,10 @@ onUnmounted(() => {
           <p class="text-sm">Next.js</p>
         </div>
         <!-- FIGMA -->
-        <div :ref="el => sectionRefs[7] = el" class="col-span-3 hover:!scale-110 transition-all duration-300 gap-4 flex flex-col justify-center items-center animate-section" :class="{ visible: sectionVisibility[7] }">
+        <div
+          :ref="(el) => (sectionRefs[7] = el)"
+          class="col-span-3 hover:!scale-110 transition-all duration-300 gap-4 flex flex-col justify-center items-center animate-section"
+          :class="{ visible: sectionVisibility[7] }">
           <svg class="size-16" width="70" height="100" viewBox="0 0 70 100" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g clip-path="url(#clip0_1_767)">
               <path
@@ -192,8 +215,15 @@ onUnmounted(() => {
           <p class="text-sm">FIGMA</p>
         </div>
         <!-- Tailwind Css -->
-        <div :ref="el => sectionRefs[8] = el" class="col-span-3 hover:!scale-110 transition-all duration-300 gap-4 flex flex-col justify-center items-center animate-section" :class="{ visible: sectionVisibility[8] }">
-          <svg class="size-16 fill-neutral-900 dark:fill-neutral-100 stroke-neutral-900 dark:stroke-neutral-100" viewBox="-2.4 -2.4 28.80 28.80" xmlns="http://www.w3.org/2000/svg" xml:space="preserve">
+        <div
+          :ref="(el) => (sectionRefs[8] = el)"
+          class="col-span-3 hover:!scale-110 transition-all duration-300 gap-4 flex flex-col justify-center items-center animate-section"
+          :class="{ visible: sectionVisibility[8] }">
+          <svg
+            class="size-16 fill-neutral-900 dark:fill-neutral-100 stroke-neutral-900 dark:stroke-neutral-100"
+            viewBox="-2.4 -2.4 28.80 28.80"
+            xmlns="http://www.w3.org/2000/svg"
+            xml:space="preserve">
             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
             <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
             <g id="SVGRepo_iconCarrier">
@@ -207,7 +237,10 @@ onUnmounted(() => {
           <p class="text-sm">Tailwind Css</p>
         </div>
         <!-- Vuetify -->
-        <div :ref="el => sectionRefs[9] = el" class="col-span-3 hover:!scale-110 transition-all duration-300 gap-4 flex flex-col justify-center items-center animate-section" :class="{ visible: sectionVisibility[9] }">
+        <div
+          :ref="(el) => (sectionRefs[9] = el)"
+          class="col-span-3 hover:!scale-110 transition-all duration-300 gap-4 flex flex-col justify-center items-center animate-section"
+          :class="{ visible: sectionVisibility[9] }">
           <svg class="size-16" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="2.668 10.668 122.664 106.258" width="1em">
             <path d="m65.3 34.414-24.46 42.376 23.16 40.136 30.672-53.13 30.66-53.128h-46.332zm0 0" fill="#1697f6" />
             <path d="m33.34 63.797 1.605 2.793 22.88-39.649 9.402-16.273h-64.559zm0 0" fill="#aeddff" />
@@ -218,7 +251,10 @@ onUnmounted(() => {
           <p class="text-sm">Vuetify</p>
         </div>
         <!-- Material Ui -->
-        <div  :ref="el => sectionRefs[10] = el" class="col-span-3 hover:!scale-110 transition-all duration-300 gap-4 flex flex-col justify-center items-center animate-section" :class="{ visible: sectionVisibility[10] }">
+        <div
+          :ref="(el) => (sectionRefs[10] = el)"
+          class="col-span-3 hover:!scale-110 transition-all duration-300 gap-4 flex flex-col justify-center items-center animate-section"
+          :class="{ visible: sectionVisibility[10] }">
           <svg
             class="size-16"
             viewBox="0 -26 256 256"
@@ -244,7 +280,10 @@ onUnmounted(() => {
           <p class="text-sm">MUI</p>
         </div>
         <!-- Swiper -->
-        <div :ref="el => sectionRefs[11] = el" class="col-span-3 hover:!scale-110 transition-all duration-300 gap-4 flex flex-col justify-center items-center animate-section" :class="{ visible: sectionVisibility[11] }">
+        <div
+          :ref="(el) => (sectionRefs[11] = el)"
+          class="col-span-3 hover:!scale-110 transition-all duration-300 gap-4 flex flex-col justify-center items-center animate-section"
+          :class="{ visible: sectionVisibility[11] }">
           <svg class="size-16" xmlns="http://www.w3.org/2000/svg" width="129" height="129" viewBox="0 0 129 129">
             <path
               d="M97.5869496,9.51093626 C115.83804,20.7848256 128,40.9721238 128,64 C128,99.346224 99.346224,128 64,128 C56.2920179,128 48.9022945,126.637372 42.0606106,124.137797 L41.3296807,123.865645 L42.5199148,123.48344 L44.0499006,122.981598 L44.8047554,122.729449 L44.8047554,122.729449 L45.5528525,122.476476 L47.0287766,121.968044 L48.477679,121.456268 L49.8995657,120.941118 L51.2944429,120.422561 L51.9817549,120.161995 L53.3361292,119.638268 C54.7663971,119.077773 56.1505947,118.511327 57.4887554,117.938757 L58.4837445,117.508179 L59.7032082,116.966702 C60.2391997,116.725238 60.7672019,116.482694 61.2872173,116.239057 L62.0612505,115.87278 L63.1998411,115.320271 L63.7590314,115.042615 L63.7590314,115.042615 L64.3114862,114.76402 L65.3961918,114.203997 C74.5017145,109.427674 80.6883363,104.239002 83.9729034,98.5499653 C90.9321253,86.4962393 84.8542511,73.6150855 67.4065187,60.4830885 L65.9866432,59.4185495 L65.1241488,58.7570907 L64.2867532,58.1006716 L63.4743719,57.4492672 L62.6869203,56.8028527 L62.3025167,56.4815088 L62.3025167,56.4815088 L61.9243138,56.161403 L61.1864678,55.5248932 L60.6492814,55.0507377 L60.6492814,55.0507377 L60.1259396,54.5793364 L59.4496246,53.9550673 L58.7977741,53.3356509 L58.1703034,52.7210621 L57.865684,52.4155703 L57.865684,52.4155703 L57.5671278,52.1112761 L56.9881629,51.5062679 C50.0910281,44.1742986 48.550875,37.8976624 51.6821025,32.4742173 C53.275799,29.713854 56.0387768,26.999998 59.9662039,24.3569485 L60.4430842,24.040124 L61.1940488,23.5569049 C61.5336196,23.3425039 61.8809347,23.1285905 62.2359916,22.9151777 L62.7743828,22.5954356 L63.603739,22.1172522 L64.4592124,21.6408141 L65.1179529,21.2846511 L65.1179529,21.2846511 L65.7913778,20.9295026 L66.7121153,20.4575739 C67.4124544,20.1043216 68.1348104,19.7526404 68.8791706,19.4025938 L69.6308651,19.0530944 L70.6559388,18.5888147 L71.1782513,18.3574212 L72.2424237,17.8961475 L72.7842819,17.6662758 L73.887538,17.2080833 L74.4489343,16.9797709 L75.5912592,16.5247346 L76.1721862,16.2980192 L77.353565,15.8462143 L78.5609715,15.3966054 L79.174433,15.1726349 L80.4208685,14.7263826 L81.6933149,14.2824097 L82.9917658,13.8407497 L83.6507409,13.6207974 L84.9881859,13.1826691 L86.3516187,12.7469371 L87.7410327,12.3136347 L89.1564212,11.8827954 L90.5977776,11.4544525 L92.4359804,10.9225852 L94.3147346,10.394736 L96.6227494,9.76671243 L97.5869496,9.51093626 Z M64,0 C71.7830114,0 79.2415381,1.38928435 86.1411179,3.93339103 L86.8782091,4.21038217 L86.4108627,4.35186467 L84.1313124,5.0545346 L83.3848908,5.2905768 L81.9121853,5.76541455 L80.4663248,6.24395126 L79.0473024,6.72622031 L77.6551115,7.21225509 L76.2897456,7.70208898 L75.6171199,7.94844102 L73.9648828,8.56854028 L72.3545311,9.19471909 L71.0963985,9.70008321 L70.4773795,9.95425044 L69.2594321,10.4655761 C56.8123589,15.7699668 48.6548341,21.7176 44.7538993,28.4742173 C37.9453585,40.2669559 44.1208291,52.9796592 61.5702618,66.1081375 L62.9900625,67.1727537 L63.8522936,67.8346365 L64.6892575,68.491774 L65.09829,68.8185721 L65.8975078,69.468645 L66.4804703,69.9531308 L66.4804703,69.9531308 L67.0493707,70.4349994 L67.7860906,71.0734406 L68.1451248,71.3909334 L68.8445933,72.0224812 C69.2263095,72.3720718 69.5965761,72.7195512 69.9554568,73.0649416 L70.4852463,73.5814631 L71.248012,74.3504059 L71.9726186,75.1123909 C78.8402712,82.495364 80.3081527,88.8974997 77.0447002,94.5499653 C74.933031,98.2074836 70.9013706,101.807999 64.958951,105.303275 L64.4134675,105.620736 L63.5293583,106.121564 L62.6189315,106.620891 C62.1058295,106.897871 61.5805462,107.174142 61.0430864,107.449677 L60.227765,107.862426 L59.2252746,108.356245 L58.1964941,108.848418 L57.1414295,109.338914 L56.6040425,109.583523 L55.5095633,110.071443 L54.3888152,110.557607 L53.2418044,111.041982 L52.6584524,111.283488 L51.4720589,111.76512 L50.869019,112.005238 L50.869019,112.005238 L50.259418,112.244884 L49.0205357,112.722748 L47.755418,113.19868 L46.4640712,113.672647 L45.1465013,114.144619 L43.8027143,114.614564 L43.1209914,114.848766 L41.7378904,115.315609 L41.0365138,115.548243 L39.6141124,116.011914 L38.1655184,116.47343 L36.3179518,117.047246 L34.4294807,117.617582 L32.8892605,118.071305 L30.739698,118.689489 C12.3072163,107.455464 0,87.1649844 0,64 C0,28.653776 28.653776,0 64,0 Z"
@@ -253,6 +292,71 @@ onUnmounted(() => {
           </svg>
 
           <p class="text-sm">Swiper</p>
+        </div>
+
+        <!-- TypeScript -->
+        <div
+          :ref="(el) => (sectionRefs[12] = el)"
+          class="col-span-3 hover:!scale-110 transition-all duration-300 gap-4 flex flex-col justify-center items-center animate-section"
+          :class="{ visible: sectionVisibility[12] }">
+          <svg class="size-16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+            <path fill="#fff" d="M22.67 47h99.67v73.67H22.67z" />
+            <path
+              data-name="original"
+              fill="#007acc"
+              d="M1.5 63.91v62.5h125v-125H1.5zm100.73-5a15.56 15.56 0 017.82 4.5 20.58 20.58 0 013 4c0 .16-5.4 3.81-8.69 5.85-.12.08-.6-.44-1.13-1.23a7.09 7.09 0 00-5.87-3.53c-3.79-.26-6.23 1.73-6.21 5a4.58 4.58 0 00.54 2.34c.83 1.73 2.38 2.76 7.24 4.86 8.95 3.85 12.78 6.39 15.16 10 2.66 4 3.25 10.46 1.45 15.24-2 5.2-6.9 8.73-13.83 9.9a38.32 38.32 0 01-9.52-.1 23 23 0 01-12.72-6.63c-1.15-1.27-3.39-4.58-3.25-4.82a9.34 9.34 0 011.15-.73L82 101l3.59-2.08.75 1.11a16.78 16.78 0 004.74 4.54c4 2.1 9.46 1.81 12.16-.62a5.43 5.43 0 00.69-6.92c-1-1.39-3-2.56-8.59-5-6.45-2.78-9.23-4.5-11.77-7.24a16.48 16.48 0 01-3.43-6.25 25 25 0 01-.22-8c1.33-6.23 6-10.58 12.82-11.87a31.66 31.66 0 019.49.26zm-29.34 5.24v5.12H56.66v46.23H45.15V69.26H28.88v-5a49.19 49.19 0 01.12-5.17C29.08 59 39 59 51 59h21.83z" />
+          </svg>
+          <p class="text-sm">TypeScript</p>
+        </div>
+
+        <!-- Nuxt -->
+        <div
+          :ref="(el) => (sectionRefs[13] = el)"
+          class="col-span-3 hover:!scale-110 transition-all duration-300 gap-4 flex flex-col justify-center items-center animate-section"
+          :class="{ visible: sectionVisibility[13] }">
+          <svg class="size-16" viewBox="0 0 128 128" xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M39.267 108.97l-.284-.567c-.567-1.135-.567-2.27-.283-3.689H8.059L53.454 24.14l19.009 34.33 6.241-4.54L59.695 19.6c-.283-.567-2.553-3.971-6.241-3.971-1.703 0-4.256.567-6.242 4.255L1.25 101.31c-.284.852-2.27 4.54-.568 7.66 1.135 1.703 2.838 3.405 6.81 3.405h38.585c-3.972 0-5.958-1.702-6.81-3.404z"
+              fill="#00c58e" />
+            <path
+              d="M126.65 101.59L89.767 35.201c-.567-.567-2.553-4.256-6.242-4.256-1.702 0-4.255.851-6.241 4.256l-4.823 7.944v15.321l11.065-19.009 36.599 65.254h-13.902a6.525 6.525 0 01-.568 3.972l-.284.284c-1.702 3.12-5.958 3.404-6.525 3.404h21.562c.851 0 4.823-.283 6.809-3.404.851-1.419 1.419-3.972-.567-7.377z"
+              fill="#108775" />
+            <path
+              d="M106.51 108.97v-.284l.284-.567c.283-1.135.567-2.27.283-3.405l-1.134-3.404-28.938-50.501-4.256-7.66h-.284l-4.256 7.66-28.938 50.5-1.134 3.405a6.81 6.81 0 00.567 4.256c1.135 1.702 2.837 3.405 6.809 3.405h53.906c.851 0 5.107-.284 7.093-3.405zM72.464 58.469l26.386 46.245H46.079z"
+              fill="#2f495e" />
+          </svg>
+
+          <p class="text-sm">Nuxt</p>
+        </div>
+
+        <!-- Quasar -->
+        <div
+          :ref="(el) => (sectionRefs[14] = el)"
+          class="col-span-3 hover:!scale-110 transition-all duration-300 gap-4 flex flex-col justify-center items-center animate-section"
+          :class="{ visible: sectionVisibility[14] }">
+          <svg class="size-16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+            <path
+              d="M73.273 64a9.274 9.274 0 1 1-18.548-.001A9.274 9.274 0 0 1 73.273 64Zm31.891-23.773a46.986 46.986 0 0 0-7.289-9.528l-10.727 6.188a35.917 35.917 0 0 0-11.187-6.489 43.994 43.994 0 0 0-8.66 12.364C79.238 41.949 91.562 46.273 103 55.21l6.75-3.898a47.262 47.262 0 0 0-4.586-11.086ZM64 111.523a47.644 47.644 0 0 0 11.887-1.546V97.602a35.648 35.648 0 0 0 11.215-6.454 44.205 44.205 0 0 0-6.375-13.687c-5.266 10.738-15.165 19.25-28.625 24.687v7.79A46.172 46.172 0 0 0 64 111.522ZM22.836 40.238a47.212 47.212 0 0 0-4.598 11.075L28.961 57.5c-.793 4.273-.8 8.66-.023 12.938a44.053 44.053 0 0 0 15.039 1.324C37.3 61.836 34.887 49 36.898 34.625l-6.75-3.898a47.141 47.141 0 0 0-7.312 9.511Zm0 0" />
+            <path
+              fill="#00b4ff"
+              d="M64 .125C28.723.125.125 28.723.125 64S28.723 127.875 64 127.875 127.875 99.277 127.875 64 99.277.125 64 .125Zm0 8.176c30.71 0 55.7 24.988 55.7 55.699 0 30.71-24.99 55.7-55.7 55.7-30.71 0-55.7-24.99-55.7-55.7C8.3 33.29 33.29 8.3 64 8.3Zm0 8.16a47.83 47.83 0 0 0-11.887 1.55v12.376a35.638 35.638 0 0 0-11.215 6.449 44.122 44.122 0 0 0 6.375 13.687c5.266-10.734 15.164-19.25 28.625-24.687V18.05A47.24 47.24 0 0 0 64 16.46ZM89.09 56.1a44.487 44.487 0 0 0-5.05.137c6.67 9.926 9.085 22.762 7.073 37.137l6.75 3.898a47.849 47.849 0 0 0 7.301-9.511c2-3.473 3.535-7.2 4.598-11.075L99.05 70.5c.8-4.324.8-8.7.023-12.938a43.998 43.998 0 0 0-9.984-1.46ZM25 72.774l-6.75 3.903a48.179 48.179 0 0 0 4.586 11.086 47.094 47.094 0 0 0 7.289 9.527l10.727-6.187a35.83 35.83 0 0 0 11.187 6.484 43.975 43.975 0 0 0 8.66-12.36C48.762 86.04 36.438 81.712 25 72.774Zm0 0" />
+          </svg>
+
+          <p class="text-sm">Quasar</p>
+        </div>
+
+        <!-- Axios -->
+        <div
+          :ref="(el) => (sectionRefs[15] = el)"
+          class="col-span-3 hover:!scale-110 transition-all duration-300 gap-4 flex flex-col justify-center items-center animate-section"
+          :class="{ visible: sectionVisibility[15] }">
+          <svg class="size-16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+            <path
+              d="M56.813 127.586c-1.903-.227-3.899-.52-4.434-.652a48.078 48.078 0 00-2.375-.5 36.042 36.042 0 01-2.703-.633c-4.145-1.188-4.442-1.285-7.567-2.563-2.875-1.172-8.172-3.91-9.984-5.156-.496-.344-.96-.621-1.031-.621-.07 0-1.23-.816-2.578-1.813-8.57-6.343-15.004-14.043-19.653-23.527-.8-1.629-1.453-3.074-1.453-3.21 0-.134-.144-.505-.32-.817-.363-.649-.88-2.047-1.297-3.492a20.047 20.047 0 00-.625-1.813c-.195-.46-.352-1.02-.352-1.246 0-.227-.195-.965-.433-1.645-.238-.675-.43-1.472-.43-1.77 0-.296-.187-1.32-.418-2.276C.598 73.492 0 67.379 0 63.953c0-3.422.598-9.535 1.16-11.894.23-.957.418-2 .418-2.32 0-.321.145-.95.32-1.4.18-.448.41-1.253.516-1.788.11-.535.36-1.457.563-2.055l.59-1.726c.433-1.293.835-2.387 1.027-2.813.11-.238.539-1.21.957-2.16.676-1.535 2.125-4.43 2.972-5.945.309-.555.426-.739 2.098-3.352 2.649-4.148 7.176-9.309 11.39-12.988 1.485-1.297 6.446-5.063 6.669-5.063.062 0 .53-.281 1.043-.625 1.347-.902 2.668-1.668 4.39-2.531a53.06 53.06 0 001.836-.953c.285-.164.82-.41 3.567-1.64.605-.27 1.257-.516 3.136-1.173.414-.144 1.246-.449 1.84-.672.598-.222 1.301-.406 1.563-.406.258 0 .937-.18 1.508-.402.57-.223 1.605-.477 2.304-.563.696-.082 1.621-.277 2.055-.43.43-.148 1.61-.34 2.621-.425a72.572 72.572 0 003.941-.465c2.688-.394 8.532-.394 11.192 0a75.02 75.02 0 003.781.445c.953.079 2.168.278 2.703.442.535.16 1.461.36 2.055.433.594.079 1.594.325 2.222.551.63.23 1.344.414 1.59.414s.754.137 1.125.309c.375.168 1.168.449 1.766.625.594.18 1.613.535 2.27.797.652.261 1.527.605 1.945.761.77.29 6.46 3.137 7.234 3.622 6.281 3.917 9.512 6.476 13.856 10.964 5.238 5.414 8.715 10.57 12.254 18.16.25.536.632 1.329.851 1.758.215.434.395.942.395 1.13 0 .19.18.76.402 1.269.602 1.383 1.117 2.957 1.36 4.16.12.59.343 1.32.495 1.621.153.3.332 1.063.403 1.688.07.624.277 1.648.453 2.269 1.02 3.531 1.527 13.934.91 18.535-.183 1.367-.39 3.02-.46 3.672-.118 1.117-.708 4.004-1.212 5.945l-.52 2.055c-.98 3.957-3.402 9.594-6.359 14.809-1.172 2.07-5.101 7.668-5.843 8.324-.067.058-.399.45-.735.863-.336.418-1.414 1.586-2.39 2.594-4.301 4.441-7.77 7.187-13.86 10.969-.722.449-6.847 3.441-7.992 3.906-.594.238-1.586.64-2.203.89-.613.247-1.297.454-1.512.458-.215.003-.781.195-1.258.425-.476.23-1.082.422-1.351.426-.266.004-1.043.192-1.727.418-.683.23-1.633.477-2.11.55-.476.075-1.495.278-2.269.45-.773.172-3.11.508-5.187.746a59.06 59.06 0 01-13.945-.031zm4.703-12.5c.3-.234.609-.7.691-1.027.18-.723 29.234-58.97 29.781-59.7.461-.617.504-1.605.082-1.953-.222-.187-3.004-.246-10.43-.234-5.57.012-10.253.016-10.406.012-.226-.008-.273-3.73-.25-19.672.016-10.817-.035-19.766-.113-19.89-.078-.126-.383-.227-.68-.227-.418 0-.613.18-.87.808-.485 1.168-1.825 3.82-8.348 16.485a3554.569 3554.569 0 00-4.055 7.89c-1.156 2.262-2.98 5.813-4.047 7.89a8751.248 8751.248 0 00-8.598 16.759c-4.933 9.636-5.53 10.785-5.742 11.039-.41.496-.633 1.64-.402 2.07.21.394.629.41 11.043.394 5.953-.007 10.863.024 10.914.07.137.141.086 37.31-.055 38.196-.093.582-.031.89.235 1.156.46.461.586.457 1.25-.066zm0 0"
+              fill="#049688" />
+          </svg>
+
+          <p class="text-sm">Axios</p>
         </div>
       </div>
     </div>
@@ -265,8 +369,17 @@ onUnmounted(() => {
 <style scoped>
 .animate-section {
   opacity: 0;
+  min-height: 140px;
+  padding: 18px 22px;
+  border: 1px solid transparent;
+  border-radius: 18px;
   transform: translateY(50px);
-  transition: opacity 1s ease-out, transform 1s ease-out; /* فقط برای اسکرول */
+  transition:
+    opacity 0.9s ease-out,
+    transform 0.9s ease-out,
+    border-color 0.3s ease-out,
+    background-color 0.3s ease-out,
+    box-shadow 0.3s ease-out;
 }
 
 .animate-section.visible {
@@ -275,6 +388,14 @@ onUnmounted(() => {
 }
 
 .animate-section:hover {
-  transition: scale 0.3s ease-out, transform 0.3s ease-out; /* جدا کردن transition برای scale */
+  border-color: rgba(115, 115, 115, 0.25);
+  background-color: rgba(255, 255, 255, 0.35);
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.08);
+}
+
+:global(.dark) .animate-section:hover {
+  border-color: rgba(245, 245, 245, 0.12);
+  background-color: rgba(255, 255, 255, 0.04);
+  box-shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
 }
 </style>
