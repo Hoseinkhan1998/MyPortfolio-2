@@ -68,6 +68,11 @@ const handleScroll = () => {
 const isNightclubOpen = ref(false);
 const showWelcomeAnimation = ref(false);
 const activeTheme = ref(null);
+const savedUserTheme = ref(false);
+
+const isShortcutLocked = ref(true);
+const welcomeVideoSrc = ref("");
+const welcomeVideoRef = ref(null);
 
 const audioRef = ref(null);
 const glowIntensity = ref(0);
@@ -78,20 +83,21 @@ let analyser = null;
 let dataArray = null;
 let animationId = null;
 
-const preloadImage = (url) => {
-  const img = new Image();
-  img.src = url;
-};
-
 const triggerNightclubEasterEgg = () => {
   if (isNightclubOpen.value || activeTheme.value) return;
-  preloadImage("/images/welcom.gif");
   isNightclubOpen.value = true;
 };
 
 const handleKeyboardShortcut = (e) => {
+  if (e.code === "Escape" && activeTheme.value) {
+    e.preventDefault();
+    exitNightclub();
+    return;
+  }
+
   if (e.ctrlKey && e.shiftKey && e.code === "KeyD") {
     e.preventDefault();
+    if (isShortcutLocked.value) return;
     triggerNightclubEasterEgg();
   }
 };
@@ -116,10 +122,17 @@ const handleThemeSelection = (theme) => {
 
 const playWelcomeAnimation = () => {
   showWelcomeAnimation.value = true;
-  setTimeout(() => {
-    showWelcomeAnimation.value = false;
-    startNightclubExperience();
-  }, 3000);
+  window.scrollTo({ top: 0, behavior: "smooth" });
+
+  if (welcomeVideoRef.value) {
+    welcomeVideoRef.value.currentTime = 2;
+    welcomeVideoRef.value.play();
+  }
+};
+
+const onWelcomeVideoEnded = () => {
+  showWelcomeAnimation.value = false;
+  startNightclubExperience();
 };
 
 const startNightclubExperience = () => {
@@ -141,6 +154,7 @@ const startNightclubExperience = () => {
   audioRef.value.play();
 
   const isDark = useDark();
+  savedUserTheme.value = isDark.value;
   isDark.value = true;
 
   visualizeAudio();
@@ -164,10 +178,35 @@ const visualizeAudio = () => {
   }
 };
 
+const exitNightclub = () => {
+  if (!activeTheme.value) return;
+
+  if (audioRef.value) {
+    audioRef.value.pause();
+    audioRef.value.currentTime = 0;
+  }
+
+  if (animationId) {
+    cancelAnimationFrame(animationId);
+  }
+  glowIntensity.value = 0;
+  frequencyBars.value = new Array(40).fill(0);
+
+  const isDark = useDark();
+  isDark.value = savedUserTheme.value;
+
+  activeTheme.value = null;
+};
+
 // --- Lifecycle Hooks ---
 onMounted(() => {
   window.addEventListener("scroll", handleScroll);
   window.addEventListener("keydown", handleKeyboardShortcut);
+
+  setTimeout(() => {
+    isShortcutLocked.value = false;
+    welcomeVideoSrc.value = "/video/welcome2.mp4";
+  }, 4000);
 });
 
 onUnmounted(() => {
@@ -214,37 +253,83 @@ onUnmounted(() => {
       </div>
     </div>
     <div class="col-span-full lg:block hidden -mt-24">
-      <TopSection @handleDisplay="handleDisplay" />
+      <TopSection :activeTheme="activeTheme" :showWelcomeAnimation="showWelcomeAnimation" @handleDisplay="handleDisplay" />
     </div>
     <div class="col-span-full lg:hidden block -mt-[12vh]" style="height: 80vh">
       <TopSectionMob @handleDisplay="handleDisplay" />
     </div>
     <div class="col-span-full lg:block hidden mt-24 mb-28 playtable" id="aboutMe">
-      <AboutMe @handleDisplay="handleDisplay" />
+      <div class="col-span-full">
+        <div class="flex justify-center">
+          <div
+            :class="[
+              'uppercase py-3 px-16 text-xl font-semibold transition-all duration-500',
+              activeTheme
+                ? 'border-2 border-current animate-neon-chroma font-mono tracking-widest text-white shadow-[0_0_20px_currentColor]'
+                : 'border-[6px] border-neutral-900 dark:border-neutral-100 border-solid',
+            ]">
+            {{ activeTheme ? "SYSTEM_OVERRIDE // ABOUT_ME" : "About Me" }}
+          </div>
+        </div>
+      </div>
+      <AboutMe :activeTheme="activeTheme" :glowIntensity="glowIntensity" @handleDisplay="handleDisplay" />
     </div>
     <div class="col-span-full lg:hidden block mt-24 playtable" id="aboutMeMob">
       <AboutMeMob @handleDisplay="handleDisplay" />
     </div>
     <div class="col-span-full lg:block hidden mb-28" id="skills">
-      <Skills @handleDisplay="handleDisplay" />
+      <div class="col-span-full flex justify-center">
+        <div
+          :class="[
+            'uppercase px-16 py-3 text-xl font-semibold transition-all duration-500',
+            activeTheme
+              ? 'border-2 border-current animate-neon-chroma font-mono tracking-widest text-white shadow-[0_0_20px_currentColor]'
+              : 'border-[6px] border-neutral-900 dark:border-neutral-100 border-solid',
+          ]">
+          {{ activeTheme ? "CORE_MODULES // SKILLS" : "skills" }}
+        </div>
+      </div>
+      <Skills :activeTheme="activeTheme" :glowIntensity="glowIntensity" @handleDisplay="handleDisplay" />
     </div>
     <div class="col-span-full lg:hidden block" id="skillsMob">
       <SkillsMob @handleDisplay="handleDisplay" />
     </div>
     <div class="col-span-full lg:block hidden mb-28" id="projects">
-      <Projects @handleDisplay="handleDisplay" />
+      <div class="col-span-full flex justify-center">
+        <div
+          :class="[
+            'uppercase px-16 py-3 text-xl font-semibold transition-all duration-500',
+            activeTheme
+              ? 'border-2 border-current animate-neon-chroma font-mono tracking-widest text-white shadow-[0_0_20px_currentColor]'
+              : 'border-[6px] border-neutral-900 dark:border-neutral-100 border-solid',
+          ]">
+          {{ activeTheme ? "DATABASE // ARCHIVES" : "Projects" }}
+        </div>
+      </div>
+      <Projects :activeTheme="activeTheme" :glowIntensity="glowIntensity" @handleDisplay="handleDisplay" />
     </div>
     <div class="col-span-full lg:hidden block mb-28" id="projectsMob">
       <ProjectsMob @handleDisplay="handleDisplay" />
     </div>
     <div class="col-span-full lg:block hidden mb-28" id="contact">
-      <ContactMe @handleDisplay="handleDisplay" />
+      <div class="col-span-full flex justify-center">
+        <div
+          :class="[
+            'uppercase px-14 py-3 text-xl font-semibold transition-all duration-500',
+            activeTheme
+              ? 'border-2 border-current animate-neon-chroma font-mono tracking-widest text-white shadow-[0_0_20px_currentColor]'
+              : 'border-[6px] border-neutral-900 dark:border-neutral-100 border-solid',
+          ]">
+          {{ activeTheme ? "SECURE_COMMLINK // CONTACT" : "Contact" }}
+        </div>
+      </div>
+      <ContactMe :activeTheme="activeTheme" :glowIntensity="glowIntensity" @handleDisplay="handleDisplay" />
     </div>
     <div class="col-span-full lg:hidden block mb-28" id="contactMob">
       <ContactMeMob @handleDisplay="handleDisplay" />
     </div>
     <div class="col-span-full" id="contact">
-      <Footer @handleDisplay="handleDisplay" />
+      <Footer :currentSection="currentSection" :activeTheme="activeTheme" :glowIntensity="glowIntensity" @handleDisplay="handleDisplay" />
     </div>
   </div>
 
@@ -259,8 +344,15 @@ onUnmounted(() => {
 
   <Teleport to="body">
     <Transition name="image-fade">
-      <div v-if="showWelcomeAnimation" class="fixed inset-0 z-[200] flex items-center justify-center backdrop-blur-sm">
-        <img src="/images/welcom.gif" alt="Happy Vibe" class="max-w-3xl w-full drop-shadow-[0_0_30px_rgba(250,204,21,0.8)] rounded-xl" />
+      <div v-show="showWelcomeAnimation" class="fixed inset-0 z-[200] flex items-center justify-center backdrop-blur-sm">
+        <video
+          ref="welcomeVideoRef"
+          :src="welcomeVideoSrc"
+          muted
+          playsinline
+          preload="auto"
+          @ended="onWelcomeVideoEnded"
+          class="max-w-3xl w-full drop-shadow-[0_0_30px_rgba(250,204,21,0.8)] rounded-xl"></video>
       </div>
     </Transition>
   </Teleport>

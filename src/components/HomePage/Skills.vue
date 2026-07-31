@@ -11,13 +11,22 @@ function handleDisplay(item) {
 
 const props = defineProps({
   isMobile: Boolean,
+  activeTheme: String,
+  glowIntensity: Number,
 });
+
+const getThemeColor = () => {
+  if (props.activeTheme === "techno") return "6, 182, 212"; // Cyan
+  if (props.activeTheme === "viking") return "220, 38, 38"; // Red
+  if (props.activeTheme === "happy") return "236, 72, 153"; // Pink
+  return "255, 255, 255";
+};
 
 const isDark = useDark();
 const toggleDark = useToggle(isDark);
 
 const sectionVisibility = ref(Array(16).fill(false));
-const sectionRefs = ref([]); 
+const sectionRefs = ref([]);
 let observer;
 
 onMounted(() => {
@@ -43,12 +52,40 @@ onUnmounted(() => {
 
 <template>
   <div class="grid grid-cols-12">
-    <div class="col-span-full flex justify-center">
-      <div class="border-[6px] uppercase border-neutral-900 dark:border-neutral-100 border-solid px-16 py-3 text-xl font-semibold">skills</div>
-    </div>
+    <!-- <div class="col-span-full flex justify-center">
+      <div
+        :class="[
+          'uppercase px-16 py-3 text-xl font-semibold transition-all duration-500',
+          activeTheme
+            ? 'border-2 border-current animate-neon-chroma font-mono tracking-widest text-white shadow-[0_0_20px_currentColor]'
+            : 'border-[6px] border-neutral-900 dark:border-neutral-100 border-solid',
+        ]">
+        {{ activeTheme ? "CORE_MODULES // SKILLS" : "skills" }}
+      </div>
+    </div> -->
     <!-- skils -->
-    <div class="col-span-full flex mt-20 justify-center mb-20">
-      <div class="grid grid-cols-12 gap-16">
+    <div
+      class="col-span-full flex mt-20 justify-center mb-20 relative"
+      :class="{ 'nightclub-mode': activeTheme }"
+      :style="
+        activeTheme
+          ? {
+              '--glow-intensity': glowIntensity,
+              '--theme-rgb': getThemeColor(),
+            }
+          : {}
+      ">
+      <div v-if="activeTheme" class="absolute inset-0 overflow-hidden flex justify-center items-center z-0 pointer-events-none">
+        <div v-if="activeTheme" class="absolute inset-0 overflow-hidden z-0 pointer-events-none">
+          <div class="absolute w-full h-full">
+            <div class="neon-ball ball-cyan" :style="{ '--ball-scale': 1 + glowIntensity * 0.9, '--ball-opacity': 0.2 + glowIntensity * 0.8 }"></div>
+            <div class="neon-ball ball-pink" :style="{ '--ball-scale': 1 + glowIntensity * 1.2, '--ball-opacity': 0.1 + glowIntensity * 0.9 }"></div>
+            <div class="neon-ball ball-purple" :style="{ '--ball-scale': 1 + glowIntensity * 0.8, '--ball-opacity': 0.3 + glowIntensity * 0.7 }"></div>
+            <div class="neon-ball ball-lime" :style="{ '--ball-scale': 1 + glowIntensity * 1.1, '--ball-opacity': 0.1 + glowIntensity * 0.9 }"></div>
+          </div>
+        </div>
+      </div>
+      <div :class="['grid grid-cols-12 relative z-10', activeTheme ? 'gap-6 px-20 w-10/12' : 'gap-10']">
         <!-- Html -->
         <div
           :ref="(el) => (sectionRefs[0] = el)"
@@ -360,7 +397,11 @@ onUnmounted(() => {
         </div>
       </div>
     </div>
-    <div class="col-span-full flex justify-center mb-20">
+    <div
+      class="col-span-full flex justify-center mb-10"
+      :class="{
+        'font-mono text-cyan-400/90 drop-shadow-[0_0_5px_rgba(6,182,212,0.5)]': activeTheme,
+      }">
       <Divider />
     </div>
   </div>
@@ -397,5 +438,145 @@ onUnmounted(() => {
   border-color: rgba(245, 245, 245, 0.12);
   background-color: rgba(255, 255, 255, 0.04);
   box-shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
+}
+
+.nightclub-mode .animate-section {
+  background-color: rgba(10, 10, 10, 0.75) !important;
+  border: 1px solid rgba(var(--theme-rgb), 0.3) !important;
+  /* حذف شدو شدید قبلی و جایگزینی با یه سایه نرم و تاریک برای عمق دادن */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.8) !important;
+  border-radius: 20px;
+}
+
+.nightclub-mode .animate-section p {
+  font-family: monospace;
+  color: rgb(var(--theme-rgb));
+  text-shadow: 0 0 10px rgb(var(--theme-rgb));
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.nightclub-mode .animate-section svg {
+  /* درخشش آیکون‌ها رو هم لایت‌تر کردیم تا تمرکز روی سنگ‌فرز باشه */
+  filter: drop-shadow(0 0 5px rgb(var(--theme-rgb))) grayscale(50%);
+}
+
+.nightclub-mode .animate-section:hover {
+  background-color: rgba(var(--theme-rgb), 0.15) !important;
+  border-color: rgb(var(--theme-rgb)) !important;
+  transform: scale(1.1) translateY(-5px) !important;
+}
+
+/* ========================================= */
+/* گوی‌های نئونی متراکم و متحرک آزادانه */
+/* ========================================= */
+
+.neon-ball {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(40px);
+  mix-blend-mode: screen;
+
+  /* اعمال آنی ابعاد و اوپاسیتی موزیک بدون لَگ و ترانزیشن */
+  transform: scale(var(--ball-scale));
+  opacity: var(--ball-opacity);
+}
+
+/* تنظیم سایزها و رنگ‌های جیغ */
+.ball-cyan {
+  width: 20vw;
+  height: 20vw;
+  background: radial-gradient(circle, rgba(6, 182, 212, 1) 0%, rgba(6, 182, 212, 0.3) 50%, rgba(0, 0, 0, 0) 70%);
+  top: 10%;
+  left: 15%;
+  animation: freeFloatOne 10s infinite alternate ease-in-out;
+}
+
+.ball-pink {
+  width: 18vw;
+  height: 18vw;
+  background: radial-gradient(circle, rgba(236, 72, 153, 1) 0%, rgba(236, 72, 153, 0.3) 50%, rgba(0, 0, 0, 0) 70%);
+  bottom: 15%;
+  right: 15%;
+  animation: freeFloatTwo 12s infinite alternate ease-in-out;
+}
+
+.ball-purple {
+  width: 25vw;
+  height: 25vw;
+  background: radial-gradient(circle, rgba(139, 92, 246, 1) 0%, rgba(139, 92, 246, 0.3) 50%, rgba(0, 0, 0, 0) 70%);
+  top: 40%;
+  left: 35%;
+  animation: freeFloatThree 14s infinite alternate ease-in-out;
+}
+
+.ball-lime {
+  width: 15vw;
+  height: 15vw;
+  background: radial-gradient(circle, rgba(57, 255, 20, 0.9) 0%, rgba(57, 255, 20, 0.2) 50%, rgba(0, 0, 0, 0) 70%);
+  bottom: 10%;
+  left: 10%;
+  animation: freeFloatFour 9s infinite alternate ease-in-out;
+}
+
+/* انیمیشن‌های جابجایی آزادانه (فقط روی پوزیشن اثر می‌گذارند تا تپش موزیک خراب نشود) */
+@keyframes freeFloatOne {
+  0% {
+    top: 10%;
+    left: 15%;
+  }
+  50% {
+    top: 20%;
+    left: 35%;
+  }
+  100% {
+    top: 5%;
+    left: 50%;
+  }
+}
+
+@keyframes freeFloatTwo {
+  0% {
+    bottom: 15%;
+    right: 15%;
+  }
+  50% {
+    bottom: 40%;
+    right: 30%;
+  }
+  100% {
+    bottom: 5%;
+    right: 45%;
+  }
+}
+
+@keyframes freeFloatThree {
+  0% {
+    top: 40%;
+    left: 35%;
+  }
+  50% {
+    top: 60%;
+    left: 20%;
+  }
+  100% {
+    top: 30%;
+    left: 10%;
+  }
+}
+
+@keyframes freeFloatFour {
+  0% {
+    bottom: 10%;
+    left: 10%;
+  }
+  50% {
+    bottom: 30%;
+    left: 40%;
+  }
+  100% {
+    bottom: 50%;
+    left: 25%;
+  }
 }
 </style>

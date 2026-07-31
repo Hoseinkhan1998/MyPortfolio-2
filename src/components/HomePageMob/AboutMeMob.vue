@@ -183,7 +183,11 @@ onUnmounted(() => {
     </div>
     <div class="col-span-full mb-20">
       <div class="flex justify-center">
-        <div class="w-4/6 text-center">
+        <div
+          class="w-4/6 text-center"
+          :class="{
+            'font-mono text-cyan-400/90 drop-shadow-[0_0_5px_rgba(6,182,212,0.5)]': activeTheme,
+          }">
           <Divider />
         </div>
       </div>
