@@ -18,6 +18,200 @@ import NightclubModal from "../NightclubModal.vue";
 
 const currentSection = ref("");
 
+const isDark = useDark();
+// --- متغیرهای پری بخش About Me ---
+const fairyVideoRef = ref(null);
+const fairyAboutTriggered = ref(false);
+const fairyAboutLanded = ref(false);
+const fairyAboutExiting = ref(false);
+const showAboutBox = ref(false);
+const fairyAboutClickable = ref(false);
+const fairyAboutText = ref("");
+const fullAboutText = "Hey there! First CLICK on me, then scroll down to meet me again for another surprise!";
+let typingAboutInterval = null;
+
+const playFairyVideo = () => {
+  if (!isDark.value || activeTheme.value || fairyAboutTriggered.value || !fairyVideoRef.value) return;
+  fairyAboutTriggered.value = true;
+  fairyVideoRef.value.currentTime = 1;
+  fairyVideoRef.value.play();
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      fairyAboutLanded.value = true;
+    });
+  });
+
+  // پس از 3.5 ثانیه (زمان رسیدن پری به مقصد)، دیالوگ با فید ظاهر و تایپ شروع می‌شود
+  setTimeout(() => {
+    if (!fairyAboutExiting.value && !activeTheme.value) {
+      showAboutBox.value = true;
+      startAboutTyping();
+    }
+  }, 3500);
+};
+
+const startAboutTyping = () => {
+  if (typingAboutInterval || fairyAboutText.value !== "") return;
+  let i = 0;
+  typingAboutInterval = setInterval(() => {
+    if (i < fullAboutText.length) {
+      fairyAboutText.value += fullAboutText.charAt(i);
+      i++;
+    } else {
+      clearInterval(typingAboutInterval);
+      fairyAboutClickable.value = true;
+    }
+  }, 35);
+};
+
+// کنترل زمان، توقف و تایپ متن پری About Me
+const handleAboutFairyTimeUpdate = () => {
+  if (!fairyVideoRef.value) return;
+  if (!fairyAboutExiting.value && fairyVideoRef.value.currentTime >= 9) {
+    fairyVideoRef.value.pause();
+  }
+};
+
+const handleAboutFairyClick = () => {
+  if (!fairyAboutClickable.value || fairyAboutExiting.value || !fairyVideoRef.value) return;
+  fairyAboutClickable.value = false;
+  showAboutBox.value = false;
+  fairyVideoRef.value.currentTime = 0;
+  fairyVideoRef.value.play();
+
+  setTimeout(() => {
+    fairyAboutExiting.value = true;
+  }, 800);
+};
+
+const fairySkillsVideoRef = ref(null);
+const fairySkillsTriggered = ref(false);
+const fairySkillsLanded = ref(false);
+const fairySkillsExiting = ref(false);
+const showSkillsBox = ref(false);
+const fairySkillsClickable = ref(false);
+const fairySkillsText = ref("");
+const fullSkillsText = "You found me again! CLICK on me first, then scroll down to the Contact section for the ultimate secret!";
+let typingSkillsInterval = null;
+
+const playSkillsFairy = () => {
+  if (!isDark.value || activeTheme.value || fairySkillsTriggered.value || !fairySkillsVideoRef.value) return;
+  fairySkillsTriggered.value = true;
+  fairySkillsVideoRef.value.currentTime = 1;
+  fairySkillsVideoRef.value.play();
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      fairySkillsLanded.value = true;
+    });
+  });
+
+  setTimeout(() => {
+    if (!fairySkillsExiting.value && !activeTheme.value) {
+      showSkillsBox.value = true;
+      startSkillsTyping();
+    }
+  }, 3500);
+};
+
+const startSkillsTyping = () => {
+  if (typingSkillsInterval || fairySkillsText.value !== "") return;
+  let i = 0;
+  typingSkillsInterval = setInterval(() => {
+    if (i < fullSkillsText.length) {
+      fairySkillsText.value += fullSkillsText.charAt(i);
+      i++;
+    } else {
+      clearInterval(typingSkillsInterval);
+      fairySkillsClickable.value = true;
+    }
+  }, 35);
+};
+
+const handleSkillsFairyTimeUpdate = () => {
+  if (!fairySkillsVideoRef.value) return;
+  if (!fairySkillsExiting.value && fairySkillsVideoRef.value.currentTime >= 9) {
+    fairySkillsVideoRef.value.pause();
+  }
+};
+
+const handleSkillsFairyClick = () => {
+  if (!fairySkillsClickable.value || fairySkillsExiting.value || !fairySkillsVideoRef.value) return;
+  fairySkillsClickable.value = false;
+  showSkillsBox.value = false;
+  fairySkillsVideoRef.value.currentTime = 0;
+  fairySkillsVideoRef.value.play();
+
+  setTimeout(() => {
+    fairySkillsExiting.value = true;
+  }, 800);
+};
+
+// --- متغیرها و منطق پری بخش Contact ---
+const fairyContactVideoRef = ref(null);
+const fairyContactTriggered = ref(false);
+const fairyContactLanded = ref(false);
+const fairyContactExiting = ref(false);
+const showContactBox = ref(false);
+const fairyContactClickable = ref(false);
+const fairyContactText = ref("");
+const fullContactText = "You made it! Here is the big secret: Press Ctrl + Shift + D on your keyboard to unlock Nightclub mode! Now CLICK me to say goodbye!";
+let typingContactInterval = null;
+
+const playContactFairy = () => {
+  if (!isDark.value || activeTheme.value || fairyContactTriggered.value || !fairyContactVideoRef.value) return;
+  fairyContactTriggered.value = true;
+  fairyContactVideoRef.value.currentTime = 1;
+  fairyContactVideoRef.value.play();
+
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      fairyContactLanded.value = true;
+    });
+  });
+
+  setTimeout(() => {
+    if (!fairyContactExiting.value && !activeTheme.value) {
+      showContactBox.value = true;
+      startContactTyping();
+    }
+  }, 3500);
+};
+
+const startContactTyping = () => {
+  if (typingContactInterval || fairyContactText.value !== "") return;
+  let i = 0;
+  typingContactInterval = setInterval(() => {
+    if (i < fullContactText.length) {
+      fairyContactText.value += fullContactText.charAt(i);
+      i++;
+    } else {
+      clearInterval(typingContactInterval);
+      fairyContactClickable.value = true;
+    }
+  }, 35);
+};
+
+const handleContactFairyTimeUpdate = () => {
+  if (!fairyContactVideoRef.value) return;
+  if (!fairyContactExiting.value && fairyContactVideoRef.value.currentTime >= 9) {
+    fairyContactVideoRef.value.pause();
+  }
+};
+
+const handleContactFairyClick = () => {
+  if (!fairyContactClickable.value || fairyContactExiting.value || !fairyContactVideoRef.value) return;
+  fairyContactClickable.value = false;
+  showContactBox.value = false;
+  fairyContactVideoRef.value.currentTime = 0;
+  fairyContactVideoRef.value.play();
+
+  setTimeout(() => {
+    fairyContactExiting.value = true;
+  }, 800);
+};
+
 function handleDisplay(targetId) {
   console.log("Target ID:", targetId);
   const el = document.getElementById(targetId);
@@ -55,6 +249,9 @@ const handleScroll = () => {
     const { top } = el.getBoundingClientRect();
     if (top <= 200 && top + el.offsetHeight > 200) {
       currentSection.value = id;
+      if (id === "aboutMe") playFairyVideo();
+      if (id === "skills" && fairyAboutExiting.value) playSkillsFairy();
+      if (id === "contact" && fairySkillsExiting.value) playContactFairy();
       found = true;
       break;
     }
@@ -153,7 +350,6 @@ const startNightclubExperience = () => {
 
   audioRef.value.play();
 
-  const isDark = useDark();
   savedUserTheme.value = isDark.value;
   isDark.value = true;
 
@@ -189,10 +385,10 @@ const exitNightclub = () => {
   if (animationId) {
     cancelAnimationFrame(animationId);
   }
+
   glowIntensity.value = 0;
   frequencyBars.value = new Array(40).fill(0);
 
-  const isDark = useDark();
   isDark.value = savedUserTheme.value;
 
   activeTheme.value = null;
@@ -240,7 +436,7 @@ onUnmounted(() => {
   <div
     :class="[
       'grid grid-cols-12 transition-colors duration-1000 relative z-20',
-      activeTheme ? 'bg-black/90 text-white' : 'bg-neutral-200 text-neutral-900 dark:text-neutral-100 dark:bg-neutral-950',
+      activeTheme ? 'bg-black/90 text-white' : 'bg-neutral-200 text-neutral-900 dark:text-neutral-100 dark:bg-black',
     ]">
     <div class="col-span-full z-20 sticky top-0 lg:block hidden">
       <div class="bg-[#00000050] text-white px-5 py-4 backdrop-blur-sm">
@@ -262,12 +458,39 @@ onUnmounted(() => {
       <div class="col-span-full">
         <div class="flex justify-center">
           <div
+            id="aboutMeTitle"
             :class="[
-              'uppercase py-3 px-16 text-xl font-semibold transition-all duration-500',
+              'uppercase py-3 px-16 text-xl font-semibold transition-all duration-500 relative',
               activeTheme
                 ? 'border-2 border-current animate-neon-chroma font-mono tracking-widest text-white shadow-[0_0_20px_currentColor]'
                 : 'border-[6px] border-neutral-900 dark:border-neutral-100 border-solid',
             ]">
+            <Transition name="fade">
+              <div
+                v-if="isDark && !activeTheme && showAboutBox && !fairyAboutExiting"
+                class="absolute top-[-9rem] left-[-14rem] w-60 bg-neutral-900 border border-purple-500 text-neutral-100 p-4 rounded-xl shadow-[0_0_15px_rgba(168,85,247,0.6)] z-[60] font-mono text-xs leading-relaxed normal-case">
+                {{ fairyAboutText }}<span v-if="!fairyAboutClickable" class="animate-pulse">_</span>
+                <div class="absolute bottom-[-6px] right-8 w-3 h-3 bg-neutral-900 border-b border-r border-purple-500 transform rotate-45"></div>
+              </div>
+            </Transition>
+
+            <video
+              v-if="isDark && !activeTheme"
+              v-show="fairyAboutTriggered"
+              ref="fairyVideoRef"
+              src="/video/fairy.mp4"
+              muted
+              playsinline
+              @click="handleAboutFairyClick"
+              @timeupdate="handleAboutFairyTimeUpdate"
+              :class="[
+                'absolute z-50 w-28',
+                fairyAboutClickable && !fairyAboutExiting ? 'cursor-pointer pointer-events-auto' : 'pointer-events-none',
+                !fairyAboutLanded && !fairyAboutExiting ? 'top-[50px] left-[-100vw] transition-all duration-[3500ms] ease-out' : '',
+                fairyAboutLanded && !fairyAboutExiting ? 'top-[-2.5rem] left-[-9.5rem] transition-all duration-[3500ms] ease-out' : '',
+                fairyAboutExiting ? 'top-[50px] left-[-100vw] transition-all duration-[3500ms] ease-in-out' : '',
+              ]"></video>
+
             {{ activeTheme ? "SYSTEM_OVERRIDE // ABOUT_ME" : "About Me" }}
           </div>
         </div>
@@ -277,15 +500,43 @@ onUnmounted(() => {
     <div class="col-span-full lg:hidden block mt-24 playtable" id="aboutMeMob">
       <AboutMeMob @handleDisplay="handleDisplay" />
     </div>
+
     <div class="col-span-full lg:block hidden mb-28" id="skills">
       <div class="col-span-full flex justify-center">
         <div
+          id="skillsTitle"
           :class="[
-            'uppercase px-16 py-3 text-xl font-semibold transition-all duration-500',
+            'uppercase px-16 py-3 text-xl font-semibold transition-all duration-500 relative',
             activeTheme
               ? 'border-2 border-current animate-neon-chroma font-mono tracking-widest text-white shadow-[0_0_20px_currentColor]'
               : 'border-[6px] border-neutral-900 dark:border-neutral-100 border-solid',
           ]">
+          <Transition name="fade">
+            <div
+              v-if="isDark && !activeTheme && showSkillsBox && !fairySkillsExiting"
+              class="absolute top-[-9rem] right-[-14rem] w-60 bg-neutral-900 border border-purple-500 text-neutral-100 p-4 rounded-xl shadow-[0_0_15px_rgba(168,85,247,0.6)] z-[60] font-mono text-xs leading-relaxed normal-case">
+              {{ fairySkillsText }}<span v-if="!fairySkillsClickable" class="animate-pulse">_</span>
+              <div class="absolute bottom-[-6px] left-8 w-3 h-3 bg-neutral-900 border-b border-l border-purple-500 transform rotate-45"></div>
+            </div>
+          </Transition>
+
+          <video
+            v-if="isDark && !activeTheme"
+            v-show="fairySkillsTriggered"
+            ref="fairySkillsVideoRef"
+            src="/video/fairy.mp4"
+            muted
+            playsinline
+            @click="handleSkillsFairyClick"
+            @timeupdate="handleSkillsFairyTimeUpdate"
+            :class="[
+              'absolute z-50 w-28 -scale-x-100',
+              fairySkillsClickable && !fairySkillsExiting ? 'cursor-pointer pointer-events-auto' : 'pointer-events-none',
+              !fairySkillsLanded && !fairySkillsExiting ? 'top-[50px] right-[-100vw] transition-all duration-[3500ms] ease-out' : '',
+              fairySkillsLanded && !fairySkillsExiting ? 'top-[-2.5rem] right-[-9.5rem] transition-all duration-[3500ms] ease-out' : '',
+              fairySkillsExiting ? 'top-[50px] right-[-100vw] transition-all duration-[3500ms] ease-in-out' : '',
+            ]"></video>
+
           {{ activeTheme ? "CORE_MODULES // SKILLS" : "skills" }}
         </div>
       </div>
@@ -314,12 +565,39 @@ onUnmounted(() => {
     <div class="col-span-full lg:block hidden mb-28" id="contact">
       <div class="col-span-full flex justify-center">
         <div
+          id="contactTitle"
           :class="[
-            'uppercase px-14 py-3 text-xl font-semibold transition-all duration-500',
+            'uppercase px-14 py-3 text-xl font-semibold transition-all duration-500 relative',
             activeTheme
               ? 'border-2 border-current animate-neon-chroma font-mono tracking-widest text-white shadow-[0_0_20px_currentColor]'
               : 'border-[6px] border-neutral-900 dark:border-neutral-100 border-solid',
           ]">
+          <Transition name="fade">
+            <div
+              v-if="isDark && !activeTheme && showContactBox && !fairyContactExiting"
+              class="absolute top-[-9rem] left-[-14rem] w-60 bg-neutral-900 border border-purple-500 text-neutral-100 p-4 rounded-xl shadow-[0_0_15px_rgba(168,85,247,0.6)] z-[60] font-mono text-xs leading-relaxed normal-case">
+              {{ fairyContactText }}<span v-if="!fairyContactClickable" class="animate-pulse">_</span>
+              <div class="absolute bottom-[-6px] right-8 w-3 h-3 bg-neutral-900 border-b border-r border-purple-500 transform rotate-45"></div>
+            </div>
+          </Transition>
+
+          <video
+            v-if="isDark && !activeTheme"
+            v-show="fairyContactTriggered"
+            ref="fairyContactVideoRef"
+            src="/video/fairy.mp4"
+            muted
+            playsinline
+            @click="handleContactFairyClick"
+            @timeupdate="handleContactFairyTimeUpdate"
+            :class="[
+              'absolute z-50 w-28',
+              fairyContactClickable && !fairyContactExiting ? 'cursor-pointer pointer-events-auto' : 'pointer-events-none',
+              !fairyContactLanded && !fairyContactExiting ? 'top-[50px] left-[-100vw] transition-all duration-[3500ms] ease-out' : '',
+              fairyContactLanded && !fairyContactExiting ? 'top-[-2.5rem] left-[-9.5rem] transition-all duration-[3500ms] ease-out' : '',
+              fairyContactExiting ? 'top-[50px] left-[-100vw] transition-all duration-[3500ms] ease-in-out' : '',
+            ]"></video>
+
           {{ activeTheme ? "SECURE_COMMLINK // CONTACT" : "Contact" }}
         </div>
       </div>
@@ -407,6 +685,15 @@ onUnmounted(() => {
     background-color: #ff6c00;
     color: #ff6c00;
   }
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 
 .animate-neon-chroma {
