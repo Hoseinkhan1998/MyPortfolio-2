@@ -1,6 +1,7 @@
 <script setup>
 import { ref, watch, onMounted, onUnmounted } from "vue";
 import { useDark, useToggle } from "@vueuse/core";
+import ParticleText from "../ParticleText.vue";
 
 const emit = defineEmits(["handleDisplay"]);
 
@@ -51,7 +52,25 @@ const toggleDark = useToggle(isDark);
         <div class="col-span-6 flex items-center justify-center">
           <div class="flex flex-col mt-10">
             <p class="font-semibold text-xl text-start">Hi, I am</p>
-            <p class="mt-7 text-5xl font-semibold">Hosein Mazinani</p>
+            <div class="h-28 w-[460px] max-w-full relative -ml-3">
+              <ParticleText
+                text="Hosein Mazinani"
+                :particleSize="2.2"
+                :density="3"
+                :color="'#000000'"
+                :highlightColor="'#4b5563'"
+                :scatter="140"
+                :gatherDuration="1500"
+                :stagger="350"
+                :pointerRepel="40"
+                :repelRadius="120"
+                :idleDrift="0.6"
+                trigger="mount"
+                fontSize="3rem"
+                fontWeight="800"
+                fontFamily="inherit"
+                :glow="Boolean(activeTheme)" />
+            </div>
             <p class="opacity-75 text-lg">Front-end Developer</p>
             <div class="flex items-center gap-5 mt-20">
               <!-- github -->

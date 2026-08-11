@@ -218,7 +218,7 @@ function handleDisplay(targetId) {
   if (el) {
     setTimeout(() => {
       const top = el.getBoundingClientRect().top + window.scrollY;
-      window.scrollTo({ top: top - 100, behavior: "smooth" });
+      window.scrollTo({ top: top - 300, behavior: "smooth" });
     }, 300);
   } else {
     console.error("Element not found for ID:", targetId);
@@ -247,7 +247,7 @@ const handleScroll = () => {
     const el = document.getElementById(id);
     if (!el) continue;
     const { top } = el.getBoundingClientRect();
-    if (top <= 200 && top + el.offsetHeight > 200) {
+    if (top <= 400 && top + el.offsetHeight > 400) {
       currentSection.value = id;
       if (id === "aboutMe") playFairyVideo();
       if (id === "skills" && fairyAboutExiting.value) playSkillsFairy();
@@ -468,7 +468,7 @@ onUnmounted(() => {
             <Transition name="fade">
               <div
                 v-if="isDark && !activeTheme && showAboutBox && !fairyAboutExiting"
-                class="absolute top-[-9rem] left-[-14rem] w-60 bg-neutral-900 border border-purple-500 text-neutral-100 p-4 rounded-xl shadow-[0_0_15px_rgba(168,85,247,0.6)] z-[60] font-mono text-xs leading-relaxed normal-case">
+                class="absolute bottom-[7rem] left-[-17rem] w-60 bg-neutral-900 border border-purple-500 text-neutral-100 p-4 rounded-xl shadow-[0_0_15px_rgba(168,85,247,0.6)] z-[60] font-mono text-xs leading-relaxed normal-case">
                 {{ fairyAboutText }}<span v-if="!fairyAboutClickable" class="animate-pulse">_</span>
                 <div class="absolute bottom-[-6px] right-8 w-3 h-3 bg-neutral-900 border-b border-r border-purple-500 transform rotate-45"></div>
               </div>
@@ -514,7 +514,7 @@ onUnmounted(() => {
           <Transition name="fade">
             <div
               v-if="isDark && !activeTheme && showSkillsBox && !fairySkillsExiting"
-              class="absolute top-[-9rem] right-[-14rem] w-60 bg-neutral-900 border border-purple-500 text-neutral-100 p-4 rounded-xl shadow-[0_0_15px_rgba(168,85,247,0.6)] z-[60] font-mono text-xs leading-relaxed normal-case">
+              class="absolute bottom-[7rem] right-[-17rem] w-60 bg-neutral-900 border border-purple-500 text-neutral-100 p-4 rounded-xl shadow-[0_0_15px_rgba(168,85,247,0.6)] z-[10] font-mono text-xs leading-relaxed normal-case">
               {{ fairySkillsText }}<span v-if="!fairySkillsClickable" class="animate-pulse">_</span>
               <div class="absolute bottom-[-6px] left-8 w-3 h-3 bg-neutral-900 border-b border-l border-purple-500 transform rotate-45"></div>
             </div>
@@ -575,7 +575,7 @@ onUnmounted(() => {
           <Transition name="fade">
             <div
               v-if="isDark && !activeTheme && showContactBox && !fairyContactExiting"
-              class="absolute top-[-9rem] left-[-14rem] w-60 bg-neutral-900 border border-purple-500 text-neutral-100 p-4 rounded-xl shadow-[0_0_15px_rgba(168,85,247,0.6)] z-[60] font-mono text-xs leading-relaxed normal-case">
+              class="absolute bottom-[7rem] left-[-17rem] w-60 bg-neutral-900 border border-purple-500 text-neutral-100 p-4 rounded-xl shadow-[0_0_15px_rgba(168,85,247,0.6)] z-[60] font-mono text-xs leading-relaxed normal-case">
               {{ fairyContactText }}<span v-if="!fairyContactClickable" class="animate-pulse">_</span>
               <div class="absolute bottom-[-6px] right-8 w-3 h-3 bg-neutral-900 border-b border-r border-purple-500 transform rotate-45"></div>
             </div>

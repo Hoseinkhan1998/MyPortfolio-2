@@ -2,6 +2,7 @@
 import { ref, onMounted, onUnmounted } from "vue";
 import { useDark, useToggle } from "@vueuse/core";
 import Divider from "../Divider.vue";
+import BorderGlow from "../BorderGlow.vue";
 
 const emit = defineEmits(["handleDisplay"]);
 
@@ -94,6 +95,7 @@ onUnmounted(() => {
         <!-- Front-End Architecture -->
         <div class="col-span-3"></div>
         <div class="col-span-4 mt-10 mb-20 animate-section" :class="{ visible: sectionVisibility[1] }">
+          <BorderGlow :enabled="Boolean(activeTheme)" class-name="p-6" :glow-intensity="0.8 + (glowIntensity || 0)" animated>
           <div class="flex flex-col items-start">
             <div class="flex items-center gap-2">
               <svg
@@ -149,11 +151,13 @@ onUnmounted(() => {
               code that teams can grow with comfortably.
             </p>
           </div>
+          </BorderGlow>
         </div>
         <div class="col-span-5"></div>
         <!-- Pixel-Perfect UI Development -->
         <div class="col-span-6"></div>
         <div class="col-span-4 mt-10 animate-section" :class="{ visible: sectionVisibility[2] }">
+          <BorderGlow :enabled="Boolean(activeTheme)" class-name="p-6" :glow-intensity="0.8 + (glowIntensity || 0)" animated>
           <div class="flex flex-col items-start">
             <div class="flex items-center gap-2">
               <svg
@@ -182,11 +186,13 @@ onUnmounted(() => {
               small details that shape a great user experience.
             </p>
           </div>
+          </BorderGlow>
         </div>
         <div class="col-span-2"></div>
         <div class="col-span-3"></div>
         <!-- Modern JavaScript Ecosystem -->
         <div class="col-span-4 mt-28 animate-section" :class="{ visible: sectionVisibility[3] }">
+          <BorderGlow :enabled="Boolean(activeTheme)" class-name="p-6" :glow-intensity="0.8 + (glowIntensity || 0)" animated>
           <div class="flex flex-col items-start">
             <div class="flex items-center gap-2">
               <svg
@@ -213,11 +219,13 @@ onUnmounted(() => {
               modern front-end tooling and workflows.
             </p>
           </div>
+          </BorderGlow>
         </div>
         <div class="col-span-5"></div>
         <div class="col-span-6"></div>
         <!-- Tailwind & Design Systems -->
         <div class="col-span-4 mt-28 animate-section" :class="{ visible: sectionVisibility[4] }">
+          <BorderGlow :enabled="Boolean(activeTheme)" class-name="p-6" :glow-intensity="0.8 + (glowIntensity || 0)" animated>
           <div class="flex flex-col items-start">
             <div class="flex items-center gap-2">
               <svg
@@ -246,10 +254,12 @@ onUnmounted(() => {
               and smooth developer experience.
             </p>
           </div>
+          </BorderGlow>
         </div>
         <div class="col-span-3"></div>
         <!-- Problem Solving & Debugging -->
         <div class="col-span-4 mt-28 animate-section" :class="{ visible: sectionVisibility[5] }">
+          <BorderGlow :enabled="Boolean(activeTheme)" class-name="p-6" :glow-intensity="0.8 + (glowIntensity || 0)" animated>
           <div class="flex flex-col items-start">
             <div class="flex items-center gap-2">
               <svg
@@ -277,10 +287,12 @@ onUnmounted(() => {
               stay patient and focused until the problem is fully understood and resolved.
             </p>
           </div>
+          </BorderGlow>
         </div>
         <div class="col-span-6"></div>
         <!-- AI-Driven Solutions -->
         <div class="col-span-4 mt-28 animate-section" :class="{ visible: sectionVisibility[6] }">
+          <BorderGlow :enabled="Boolean(activeTheme)" class-name="p-6" :glow-intensity="0.8 + (glowIntensity || 0)" animated>
           <div class="mt-10 mb-20">
             <div class="flex flex-col items-start">
               <div class="flex items-center gap-2">
@@ -309,6 +321,7 @@ onUnmounted(() => {
               </p>
             </div>
           </div>
+          </BorderGlow>
         </div>
       </div>
     </div>
