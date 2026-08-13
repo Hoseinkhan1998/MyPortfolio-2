@@ -3,6 +3,7 @@ import { ref, onMounted, onUnmounted } from "vue";
 import { useDark, useToggle } from "@vueuse/core";
 import Divider from "../Divider.vue";
 import BorderGlow from "../BorderGlow.vue";
+import MagicRings from "../MagicRings.vue";
 
 const emit = defineEmits(["handleDisplay"]);
 
@@ -18,31 +19,111 @@ const props = defineProps({
 
 const isDark = useDark();
 const toggleDark = useToggle(isDark);
-// اضافه کردن منطق انیمیشن اسکرول
-const sectionVisibility = ref([false, false, false, false, false, false, false]); // 5 بخش: توضیحات + 4 مهارت
+const aboutSection = ref(null);
+const exploreTrigger = ref(null);
+const lastCard = ref(null);
+const ringOpacity = ref(0);
+const sectionVisibility = ref([false, false, false, false, false, false, false]);
 
-const handleScroll = () => {
-  const sections = document.querySelectorAll(".animate-section");
+const easterEggWords = ["press", "ctrl", "shift", "F"];
+const activeWordIndex = ref(-1);
+
+const handleEasterEggMouseMove = (e) => {
+  const container = e.currentTarget;
+  if (!container) return;
+  const rect = container.getBoundingClientRect();
+  const x = e.clientX - rect.left;
+  const wordCount = easterEggWords.length;
+  const index = Math.floor((x / rect.width) * wordCount);
+  activeWordIndex.value = Math.max(0, Math.min(wordCount - 1, index));
+};
+
+const handleEasterEggMouseLeave = () => {
+  activeWordIndex.value = -1;
+};
+
+const FADE_DISTANCE = 360;
+let scrollFrame = 0;
+
+const clamp = (value, min = 0, max = 1) => Math.min(Math.max(value, min), max);
+const smoothstep = (value) => {
+  const progress = clamp(value);
+  return progress * progress * (3 - 2 * progress);
+};
+
+const updateScrollEffects = () => {
+  scrollFrame = 0;
+
+  const sections = aboutSection.value?.querySelectorAll(".animate-section") || [];
   sections.forEach((section, index) => {
     const rect = section.getBoundingClientRect();
     if (rect.top < window.innerHeight * 0.8 && !sectionVisibility.value[index]) {
-      sectionVisibility.value[index] = true; // بخش نمایش داده شده
+      sectionVisibility.value[index] = true;
     }
   });
+
+  if (!exploreTrigger.value || !lastCard.value) return;
+
+  const viewportCenter = window.innerHeight / 2;
+  const exploreRect = exploreTrigger.value.getBoundingClientRect();
+  const lastCardRect = lastCard.value.getBoundingClientRect();
+  const fadeIn = smoothstep((viewportCenter - (exploreRect.top + exploreRect.height / 2)) / FADE_DISTANCE);
+  const fadeOut = smoothstep((lastCardRect.bottom - viewportCenter) / FADE_DISTANCE);
+
+  ringOpacity.value = Math.min(fadeIn, fadeOut);
+};
+
+const handleScroll = () => {
+  if (scrollFrame) return;
+  scrollFrame = requestAnimationFrame(updateScrollEffects);
 };
 
 onMounted(() => {
-  window.addEventListener("scroll", handleScroll);
-  handleScroll(); // بررسی اولیه
+  window.addEventListener("scroll", handleScroll, { passive: true });
+  window.addEventListener("resize", handleScroll);
+  updateScrollEffects();
 });
 
 onUnmounted(() => {
   window.removeEventListener("scroll", handleScroll);
+  window.removeEventListener("resize", handleScroll);
+  if (scrollFrame) cancelAnimationFrame(scrollFrame);
 });
 </script>
 
 <template>
-  <div class="grid grid-cols-12">
+  <section ref="aboutSection" class="relative isolate">
+    <div v-if="activeTheme" class="magic-rings-sticky sticky top-0 z-0 pointer-events-none" aria-hidden="true">
+      <div
+        class="magic-rings-layer absolute left-1/2 top-0 h-full w-screen -translate-x-1/2 will-change-[opacity]"
+        :style="{ opacity: ringOpacity }">
+        <MagicRings
+          color="#06b6d4"
+          color-two="#4c3bf6"
+          :ring-count="6"
+          :speed="1"
+          :attenuation="10"
+          :line-thickness="2"
+          :base-radius="0.35"
+          :radius-step="0.1"
+          :scale-rate="0.1"
+          :opacity="0.1"
+          :blur="3"
+          :noise-amount="0.1"
+          :rotation="0"
+          :ring-gap="1.5"
+          :fade-in="0.7"
+          :fade-out="0.5"
+          :mouse-influence="0.2"
+          :hover-scale="1.2"
+          :parallax="0.05"
+          :audio-intensity="glowIntensity || 0"
+          follow-mouse
+          click-burst />
+      </div>
+    </div>
+
+    <div class="relative z-10 grid grid-cols-12">
     <!-- <div class="col-span-full">
       <div class="flex justify-center">
         <div
@@ -76,7 +157,7 @@ onUnmounted(() => {
             experiences, and building products that not only work well <span class="font-semibold"> but feel great to use.</span>
           </p>
           <!-- explore -->
-          <div class="flex justify-center mt-20">
+          <div ref="exploreTrigger" class="flex justify-center mt-20">
             <div
               :class="[
                 'font-semibold px-10 uppercase h-10 text-center flex items-center transition-all duration-300',
@@ -291,9 +372,9 @@ onUnmounted(() => {
         </div>
         <div class="col-span-6"></div>
         <!-- AI-Driven Solutions -->
-        <div class="col-span-4 mt-28 animate-section" :class="{ visible: sectionVisibility[6] }">
+        <div ref="lastCard" class="col-span-4 mt-28 animate-section" :class="{ visible: sectionVisibility[6] }">
           <BorderGlow :enabled="Boolean(activeTheme)" class-name="p-6" :glow-intensity="0.8 + (glowIntensity || 0)" animated>
-          <div class="mt-10 mb-20">
+          <div :class="[activeTheme ? 'mt-10 mb-6' : 'mt-10 mb-20']">
             <div class="flex flex-col items-start">
               <div class="flex items-center gap-2">
                 <svg
@@ -320,6 +401,26 @@ onUnmounted(() => {
                 productive while still keeping engineering decisions thoughtful and intentional.
               </p>
             </div>
+
+            <!-- Nightclub Mode Easter Egg -->
+            <div
+              v-if="activeTheme"
+              class="mt-8 pt-4 pb-2 w-full flex items-center justify-center gap-2 md:gap-3 select-none cursor-pointer min-h-[48px] rounded-lg transition-all duration-500 hover:bg-purple-950/20"
+              @mousemove="handleEasterEggMouseMove"
+              @mouseleave="handleEasterEggMouseLeave">
+              <div
+                v-for="(word, index) in easterEggWords"
+                :key="index"
+                @mouseenter="activeWordIndex = index"
+                class="transition-all duration-700 ease-out font-mono text-xs md:text-sm font-bold tracking-widest px-2.5 py-1 rounded-md"
+                :class="[
+                  activeWordIndex === index
+                    ? 'opacity-100 scale-110 text-purple-300 drop-shadow-[0_0_15px_rgba(192,132,252,0.95)] bg-purple-900/40 border border-purple-500/50'
+                    : 'opacity-0 scale-90 text-purple-500/0 border border-transparent'
+                ]">
+                {{ word }}
+              </div>
+            </div>
           </div>
           </BorderGlow>
         </div>
@@ -336,10 +437,22 @@ onUnmounted(() => {
         </div>
       </div>
     </div>
-  </div>
+    </div>
+  </section>
 </template>
 
 <style scoped>
+.magic-rings-sticky {
+  height: 100vh;
+  height: 100svh;
+  margin-bottom: -100vh;
+  margin-bottom: -100svh;
+}
+
+.magic-rings-layer {
+  transition: opacity 1.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 .animate-section {
   opacity: 0;
   transform: translateY(50px);

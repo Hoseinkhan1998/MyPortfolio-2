@@ -17,6 +17,12 @@ const props = defineProps({
     default: () => ["#c084fc", "#f472b6", "#38bdf8"],
   },
   fillOpacity: { type: Number, default: 0.5 },
+  // Tilted Card Props
+  tiltEnabled: { type: Boolean, default: true },
+  scaleOnHover: { type: Number, default: 1.02 },
+  rotateAmplitude: { type: Number, default: 14 },
+  showTooltip: { type: Boolean, default: false },
+  captionText: { type: String, default: "" },
 });
 
 const cardRef = ref(null);
@@ -24,6 +30,15 @@ const isHovered = ref(false);
 const cursorAngle = ref(45);
 const edgeProximity = ref(0);
 const sweepActive = ref(false);
+
+// Tilted Card State
+const rotateX = ref(0);
+const rotateY = ref(0);
+const scale = ref(1);
+const tooltipX = ref(0);
+const tooltipY = ref(0);
+const rotateFigcaption = ref(0);
+let lastOffsetY = 0;
 
 const animationFrames = new Set();
 const animationTimers = new Set();
@@ -174,12 +189,45 @@ const glowOpacity = computed(() => {
 });
 const opacityTransition = computed(() => (isVisible.value ? "opacity 0.25s ease-out" : "opacity 0.75s ease-in-out"));
 
-const cardStyle = computed(() => ({
-  background: props.backgroundColor,
-  borderRadius: `${props.borderRadius}px`,
-  transform: "translate3d(0, 0, 0.01px)",
-  boxShadow:
-    "rgba(0,0,0,0.1) 0 1px 2px, rgba(0,0,0,0.1) 0 2px 4px, rgba(0,0,0,0.1) 0 4px 8px, rgba(0,0,0,0.1) 0 8px 16px, rgba(0,0,0,0.1) 0 16px 32px, rgba(0,0,0,0.1) 0 32px 64px",
+const cardStyle = computed(() => {
+  const baseStyle = {
+    background: props.backgroundColor,
+    borderRadius: `${props.borderRadius}px`,
+    boxShadow:
+      "rgba(0,0,0,0.1) 0 1px 2px, rgba(0,0,0,0.1) 0 2px 4px, rgba(0,0,0,0.1) 0 4px 8px, rgba(0,0,0,0.1) 0 8px 16px, rgba(0,0,0,0.1) 0 16px 32px, rgba(0,0,0,0.1) 0 32px 64px",
+  };
+
+  if (props.tiltEnabled) {
+    return {
+      ...baseStyle,
+      transform: `perspective(1000px) scale(${scale.value}) rotateX(${rotateX.value}deg) rotateY(${rotateY.value}deg)`,
+      transformStyle: "preserve-3d",
+      transition: "transform 0.3s cubic-bezier(0.25, 1, 0.5, 1)",
+      willChange: "transform",
+    };
+  } else {
+    return {
+      ...baseStyle,
+      transform: "translate3d(0, 0, 0.01px)",
+    };
+  }
+});
+
+const contentStyle = computed(() => {
+  if (props.tiltEnabled) {
+    return {
+      transform: "translateZ(30px)",
+      willChange: "transform",
+      transition: "transform 0.3s cubic-bezier(0.25, 1, 0.5, 1)",
+    };
+  }
+  return {};
+});
+
+const tooltipStyle = computed(() => ({
+  transform: `translate(${tooltipX.value}px, ${tooltipY.value}px) rotate(${rotateFigcaption.value}deg)`,
+  opacity: isHovered.value ? 1 : 0,
+  transition: "opacity 0.2s ease, transform 0.1s ease-out",
 }));
 
 const borderStyle = computed(() => {
@@ -258,6 +306,23 @@ function getCursorAngle(element, x, y) {
   return degrees;
 }
 
+function handlePointerEnter() {
+  isHovered.value = true;
+  if (props.tiltEnabled) {
+    scale.value = props.scaleOnHover;
+  }
+}
+
+function handlePointerLeave() {
+  isHovered.value = false;
+  if (props.tiltEnabled) {
+    scale.value = 1;
+    rotateX.value = 0;
+    rotateY.value = 0;
+    rotateFigcaption.value = 0;
+  }
+}
+
 function handlePointerMove(event) {
   const card = cardRef.value;
   if (!card) return;
@@ -266,6 +331,21 @@ function handlePointerMove(event) {
   const y = event.clientY - rect.top;
   edgeProximity.value = getEdgeProximity(card, x, y);
   cursorAngle.value = getCursorAngle(card, x, y);
+
+  if (props.tiltEnabled) {
+    const offsetX = event.clientX - rect.left - rect.width / 2;
+    const offsetY = event.clientY - rect.top - rect.height / 2;
+    rotateX.value = (offsetY / (rect.height / 2)) * -props.rotateAmplitude;
+    rotateY.value = (offsetX / (rect.width / 2)) * props.rotateAmplitude;
+
+    if (props.showTooltip) {
+      tooltipX.value = x;
+      tooltipY.value = y;
+      const velocityY = offsetY - lastOffsetY;
+      rotateFigcaption.value = -velocityY * 0.6;
+      lastOffsetY = offsetY;
+    }
+  }
 }
 </script>
 
@@ -276,8 +356,8 @@ function handlePointerMove(event) {
     :class="['relative grid isolate border border-white/15', className]"
     :style="cardStyle"
     @pointermove="handlePointerMove"
-    @pointerenter="isHovered = true"
-    @pointerleave="isHovered = false">
+    @pointerenter="handlePointerEnter"
+    @pointerleave="handlePointerLeave">
     <div class="absolute inset-0 rounded-[inherit] -z-[1]" :style="borderStyle"></div>
     <div class="absolute inset-0 rounded-[inherit] -z-[1]" :style="fillStyle"></div>
 
@@ -290,9 +370,17 @@ function handlePointerMove(event) {
         }"></span>
     </span>
 
-    <div class="flex flex-col relative overflow-auto z-[1]">
+    <div class="flex flex-col relative overflow-auto z-[1]" :style="contentStyle">
       <slot />
     </div>
+
+    <figcaption
+      v-if="showTooltip"
+      class="pointer-events-none absolute left-0 top-0 rounded-[4px] bg-white px-[10px] py-[4px] text-[10px] text-[#2d2d2d] z-[3] hidden sm:block"
+      :style="tooltipStyle"
+    >
+      {{ captionText }}
+    </figcaption>
   </div>
   <slot v-else />
 </template>

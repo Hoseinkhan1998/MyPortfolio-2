@@ -294,7 +294,6 @@ const handleKeyboardShortcut = (e) => {
 
   if (e.ctrlKey && e.shiftKey && e.code === "KeyD") {
     e.preventDefault();
-    if (isShortcutLocked.value) return;
     triggerNightclubEasterEgg();
   }
 };
@@ -618,7 +617,7 @@ onUnmounted(() => {
       </svg>
     </div>
   </button>
-  <NightclubModal :isOpen="isNightclubOpen" @close="closeNightclubModal" @selectTheme="handleThemeSelection" />
+  <NightclubModal :isOpen="isNightclubOpen" :isLocked="isShortcutLocked" @close="closeNightclubModal" @selectTheme="handleThemeSelection" @unlock="isShortcutLocked = false" />
 
   <Teleport to="body">
     <Transition name="image-fade">
