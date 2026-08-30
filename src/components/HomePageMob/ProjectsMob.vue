@@ -2,6 +2,7 @@
 import { ref, onMounted, onUnmounted } from "vue";
 import { useDark, useToggle } from "@vueuse/core";
 import Divider from "../Divider.vue";
+import { useI18n } from "vue-i18n";
 
 const emit = defineEmits(["handleDisplay"]);
 
@@ -13,6 +14,7 @@ const props = defineProps({});
 
 const isDark = useDark();
 const toggleDark = useToggle(isDark);
+const { t } = useI18n();
 // اضافه کردن منطق انیمیشن اسکرول
 const sectionVisibility = ref(Array(12).fill(false)); // 5 بخش: توضیحات + 4 مهارت
 
@@ -41,52 +43,49 @@ const projects = [
     skills: ["Nuxt 4", "TypeScript", "Supabase", "Pinia", "Nuxt Image", "Tailwind 4"],
     img: "mazzinshop.webp",
     link: "https://mazzinshop.ir",
-    description:
-      "A modern e-commerce platform built with Nuxt 4 and TypeScript, featuring a powerful product search engine, category-based filtering, Supabase integration, Pinia state management, optimized images with Nuxt Image, and a clean responsive UI powered by Tailwind CSS.",
+    descriptionKey: "mazzinshop",
   },
   {
     skills: ["React", "TypeScript", "AI Analysis", "React Query", "Supabase", "Framer Motion", "Zod", "Medical Imaging"],
     img: "lab-ai.webp",
     link: "https://app.snapcyte.com",
-    description:
-      "AI-powered laboratory platform developed for a Canadian company, focused on scientific image processing and life science data analysis. Features advanced medical image interpretation, AI-assisted workflows, custom model integration, efficient state management with React Query, and interactive UI components for research environments.",
+    descriptionKey: "labAi",
   },
   {
     skills: ["vue", "daisyui", "vuetify", "Tailwind", "Swiper"],
     img: "mywebsite.webp",
     link: "https://www.hoseinmazinani.ir",
-    description:
-      "a CV website for Hosein Mazinani, showcasing my skills using Vue.js and Tailwind CSS. The site highlights my expertise and experience in a clean and modern design.",
+    descriptionKey: "mywebsite",
   },
   {
     skills: ["React", "Tailwind", "Syncfusion", "Eslint"],
     img: "dashboard.webp",
     link: "https://dashboard-five-flax.vercel.app/",
-    description: "Data-rich React dashboard built with Syncfusion components and styled with Tailwind CSS.",
+    descriptionKey: "dashboard",
   },
   {
     skills: ["NEXT.JS", "React", "Mongo db", "SWR", "Html&Css"],
     img: "event.webp",
     link: "https://nextjs-tutorial-coral-three.vercel.app/",
-    description: "Dynamic event list app built using Next.js, React, MongoDB, and SWR for data management.",
+    descriptionKey: "event",
   },
   {
     skills: ["React", "MUI", "Axios", "Emotion"],
     img: "clone.webp",
     link: "https://youtube-clone-xi-five.vercel.app/",
-    description: "YouTube clone app built in React with MUI for a sleek UI and Axios for data management.",
+    descriptionKey: "clone",
   },
   {
     skills: ["vue", "daisyui", "vuetify", "Tailwind", "Swiper"],
     img: "octopus.webp",
     link: "https://octopus-website-ten.vercel.app/",
-    description: "Octopus Company website to introduce the company and the modules they offer.",
+    descriptionKey: "octopus",
   },
   {
     skills: ["vue", "daisyui", "vuetify", "Tailwind", "Swiper"],
     img: "yekmovie.webp",
     link: "https://yek-movie-hosein-khan.vercel.app/",
-    description: "A Persian site for downloading the latest movies and series.",
+    descriptionKey: "yekmovie",
   },
 ];
 </script>
@@ -94,7 +93,7 @@ const projects = [
 <template>
   <div class="grid grid-cols-12">
     <div class="col-span-full flex justify-center">
-      <div class="border-[6px] uppercase border-neutral-900 dark:border-neutral-100 border-solid px-16 py-3 text-xl font-semibold">Projects</div>
+      <div class="border-[6px] uppercase border-neutral-900 dark:border-neutral-100 border-solid px-16 py-3 text-xl font-semibold">{{ t('projects.title') }}</div>
     </div>
     <!-- skils -->
     <div class="col-span-full mt-20 flex justify-center">
@@ -117,13 +116,13 @@ const projects = [
                   target="_blank"
                   class="flex text-white font-semibold py-1 justify-center items-center rounded-lg mb-6"
                   style="background-color: rgba(5, 5, 5, 0.5); border: solid 2px white">
-                  Visit
+                  {{ t('projects.visit') }}
                 </a>
               </div>
             </div>
           </div>
           <div class="text-[14px] mt-2 pl-3 font-medium pb-2">
-            <p>{{ project.description }}</p>
+            <p>{{ t('projects.items.' + project.descriptionKey + '.descMob') }}</p>
           </div>
         </div>
       </div>

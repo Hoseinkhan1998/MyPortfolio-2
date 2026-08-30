@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from "vue";
 import { useDark, useToggle } from "@vueuse/core";
+import { useI18n } from "vue-i18n";
 
 const emit = defineEmits(["handleDisplay"]);
 
@@ -14,10 +15,11 @@ const props = defineProps({
 
 const isDark = useDark();
 const toggleDark = useToggle(isDark);
+const { t, locale } = useI18n();
 </script>
 
 <template>
-  <div class="flex w-full bg-neutral-100 dark:bg-neutral-900" style="height: 80vh;">
+  <div dir="ltr" class="flex w-full bg-neutral-100 dark:bg-neutral-900" style="height: 80vh;">
     <div class="grid w-full grid-cols-12" style="height: 80vh;">
       <!-- light mode -->
       <div class="col-span-full bg-neutral-100 dark:bg-neutral-900 grid grid-cols-12 text-neutral-900" style="height: 80vh;">
@@ -28,10 +30,10 @@ const toggleDark = useToggle(isDark);
       </div>
       <div class="bg-information relative col-span-full h-[50vh] -mt-[50vh] z-10">
         <div class="bottom-5 absolute flex items-end justify-between w-full px-5">
-          <div class="flex flex-col text-neutral-100">
-            <p class="font-semibold text-xl text-start">Hi, I am</p>
-            <p class="text-3xl font-semibold">Hosein Mazinani</p>
-            <p class="opacity-75 text-lg">Front-end Developer</p>
+          <div :class="['flex flex-col text-neutral-100', locale === 'fa' ? 'text-right items-end' : 'text-left items-start']">
+            <p class="font-semibold text-xl">{{ t('topSection.hi') }}</p>
+            <p class="text-3xl font-semibold">{{ t('topSection.name') }}</p>
+            <p class="opacity-75 text-lg">{{ t('topSection.role') }}</p>
           </div>
           <div class="flex flex-col gap-2">
             <!-- github -->
