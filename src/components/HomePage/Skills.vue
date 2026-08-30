@@ -2,6 +2,7 @@
 import { ref, onMounted, onUnmounted } from "vue";
 import { useDark, useToggle } from "@vueuse/core";
 import Divider from "../Divider.vue";
+import { useI18n } from "vue-i18n";
 
 const emit = defineEmits(["handleDisplay"]);
 
@@ -24,6 +25,7 @@ const getThemeColor = () => {
 
 const isDark = useDark();
 const toggleDark = useToggle(isDark);
+const { t } = useI18n();
 
 const sectionVisibility = ref(Array(16).fill(false));
 const sectionRefs = ref([]);
@@ -60,7 +62,7 @@ onUnmounted(() => {
             ? 'border-2 border-current animate-neon-chroma font-mono tracking-widest text-white shadow-[0_0_20px_currentColor]'
             : 'border-[6px] border-neutral-900 dark:border-neutral-100 border-solid',
         ]">
-        {{ activeTheme ? "CORE_MODULES // SKILLS" : "skills" }}
+        {{ activeTheme ? t('skills.sysTitle') : t('skills.title') }}
       </div>
     </div> -->
     <!-- skils -->

@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from "vue";
 import { useDark, useToggle } from "@vueuse/core";
+import { useI18n } from "vue-i18n";
 
 const emit = defineEmits(["handleDisplay"]);
 
@@ -16,10 +17,15 @@ const props = defineProps({
 
 const isDark = useDark();
 const toggleDark = useToggle(isDark);
+const { t, locale } = useI18n();
+
+const toggleLanguage = () => {
+  locale.value = locale.value === "en" ? "fa" : "en";
+};
 </script>
 
 <template>
-  <div class="grid grid-cols-12 relative pb-2 items-center min-h-[50px]">
+  <div dir="ltr" class="grid grid-cols-12 relative pb-2 items-center min-h-[50px]">
     <!-- لایه بک‌گراند اکولایزر زنده، لایت و سرتاسری پشت دکمه‌ها -->
     <div
       v-if="activeTheme && frequencyBars"
@@ -35,9 +41,14 @@ const toggleDark = useToggle(isDark);
 
     <!-- محتوای هدر روی لایه z-10 جهت خوانایی کامل -->
     <div class="col-span-6 relative z-10">
-      <div class="flex justify-start">
+      <div class="flex justify-start items-center gap-4">
+        <!-- Language Switcher -->
+        <button @click="toggleLanguage" class="font-bold text-lg hover:text-cyan-500 transition-colors z-20">
+          {{ locale === "en" ? "FA" : "EN" }}
+        </button>
+
         <div v-if="!activeTheme" class="cursor-pointer">
-          <label class="swap swap-rotate">
+          <label class="swap swap-rotate z-20">
             <input type="checkbox" @click="toggleDark()" />
             <svg class="swap-off h-8 mt-2 w-8 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
               <path
@@ -54,14 +65,14 @@ const toggleDark = useToggle(isDark);
     </div>
 
     <div class="col-span-6 relative z-10">
-      <div class="flex items-center justify-center mt-2 text-lg">
+      <div class="flex items-center justify-end md:justify-center mt-2 text-lg">
         <button
           @click="handleDisplay('aboutMe')"
           :class="[
             'rounded-xl w-36 transition-all duration-300',
             props.currentSection === 'aboutMe' ? (activeTheme ? 'bg-white text-black shadow-[0_0_15px_rgba(255,255,255,0.6)]' : 'bg-neutral-100 text-neutral-900') : '',
           ]">
-          about me
+          {{ t("header.aboutMe") }}
         </button>
         <button
           @click="handleDisplay('skills')"
@@ -69,7 +80,7 @@ const toggleDark = useToggle(isDark);
             'rounded-xl w-36 transition-all duration-300',
             props.currentSection === 'skills' ? (activeTheme ? 'bg-white text-black shadow-[0_0_15px_rgba(255,255,255,0.6)]' : 'bg-neutral-100 text-neutral-900') : '',
           ]">
-          skills
+          {{ t("header.skills") }}
         </button>
         <button
           @click="handleDisplay('projects')"
@@ -77,7 +88,7 @@ const toggleDark = useToggle(isDark);
             'rounded-xl w-36 transition-all duration-300',
             props.currentSection === 'projects' ? (activeTheme ? 'bg-white text-black shadow-[0_0_15px_rgba(255,255,255,0.6)]' : 'bg-neutral-100 text-neutral-900') : '',
           ]">
-          projects
+          {{ t("header.projects") }}
         </button>
         <button
           @click="handleDisplay('contact')"
@@ -85,7 +96,7 @@ const toggleDark = useToggle(isDark);
             'rounded-xl w-36 transition-all duration-300',
             props.currentSection === 'contact' ? (activeTheme ? 'bg-white text-black shadow-[0_0_15px_rgba(255,255,255,0.6)]' : 'bg-neutral-100 text-neutral-900') : '',
           ]">
-          contact
+          {{ t("header.contact") }}
         </button>
       </div>
     </div>

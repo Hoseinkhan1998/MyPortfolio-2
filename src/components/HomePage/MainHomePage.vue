@@ -1,6 +1,7 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted, onUnmounted, computed, watch } from "vue";
 import { useDark } from "@vueuse/core";
+import { useI18n } from "vue-i18n";
 import TopSection from "./TopSection.vue";
 import Header from "./Header.vue";
 import AboutMe from "./AboutMe.vue";
@@ -19,6 +20,7 @@ import NightclubModal from "../NightclubModal.vue";
 const currentSection = ref("");
 
 const isDark = useDark();
+const { t, locale } = useI18n();
 // --- متغیرهای پری بخش About Me ---
 const fairyVideoRef = ref(null);
 const fairyAboutTriggered = ref(false);
@@ -27,7 +29,7 @@ const fairyAboutExiting = ref(false);
 const showAboutBox = ref(false);
 const fairyAboutClickable = ref(false);
 const fairyAboutText = ref("");
-const fullAboutText = "Hey there! First CLICK on me, then scroll down to meet me again for another surprise!";
+const fullAboutText = computed(() => t('fairy.about'));
 let typingAboutInterval = null;
 
 const playFairyVideo = () => {
@@ -54,9 +56,10 @@ const playFairyVideo = () => {
 const startAboutTyping = () => {
   if (typingAboutInterval || fairyAboutText.value !== "") return;
   let i = 0;
+  const textToType = fullAboutText.value;
   typingAboutInterval = setInterval(() => {
-    if (i < fullAboutText.length) {
-      fairyAboutText.value += fullAboutText.charAt(i);
+    if (i < textToType.length) {
+      fairyAboutText.value += textToType.charAt(i);
       i++;
     } else {
       clearInterval(typingAboutInterval);
@@ -92,7 +95,7 @@ const fairySkillsExiting = ref(false);
 const showSkillsBox = ref(false);
 const fairySkillsClickable = ref(false);
 const fairySkillsText = ref("");
-const fullSkillsText = "You found me again! CLICK on me first, then scroll down to the Contact section for the ultimate secret!";
+const fullSkillsText = computed(() => t('fairy.skills'));
 let typingSkillsInterval = null;
 
 const playSkillsFairy = () => {
@@ -118,9 +121,10 @@ const playSkillsFairy = () => {
 const startSkillsTyping = () => {
   if (typingSkillsInterval || fairySkillsText.value !== "") return;
   let i = 0;
+  const textToType = fullSkillsText.value;
   typingSkillsInterval = setInterval(() => {
-    if (i < fullSkillsText.length) {
-      fairySkillsText.value += fullSkillsText.charAt(i);
+    if (i < textToType.length) {
+      fairySkillsText.value += textToType.charAt(i);
       i++;
     } else {
       clearInterval(typingSkillsInterval);
@@ -156,7 +160,7 @@ const fairyContactExiting = ref(false);
 const showContactBox = ref(false);
 const fairyContactClickable = ref(false);
 const fairyContactText = ref("");
-const fullContactText = "You made it! Here is the big secret: Press Ctrl + Shift + D on your keyboard to unlock Nightclub mode! Now CLICK me to say goodbye!";
+const fullContactText = computed(() => t('fairy.contact'));
 let typingContactInterval = null;
 
 const playContactFairy = () => {
@@ -182,9 +186,10 @@ const playContactFairy = () => {
 const startContactTyping = () => {
   if (typingContactInterval || fairyContactText.value !== "") return;
   let i = 0;
+  const textToType = fullContactText.value;
   typingContactInterval = setInterval(() => {
-    if (i < fullContactText.length) {
-      fairyContactText.value += fullContactText.charAt(i);
+    if (i < textToType.length) {
+      fairyContactText.value += textToType.charAt(i);
       i++;
     } else {
       clearInterval(typingContactInterval);
@@ -199,6 +204,12 @@ const handleContactFairyTimeUpdate = () => {
     fairyContactVideoRef.value.pause();
   }
 };
+
+watch(locale, () => {
+  if (fairyAboutText.value !== "") fairyAboutText.value = fullAboutText.value;
+  if (fairySkillsText.value !== "") fairySkillsText.value = fullSkillsText.value;
+  if (fairyContactText.value !== "") fairyContactText.value = fullContactText.value;
+});
 
 const handleContactFairyClick = () => {
   if (!fairyContactClickable.value || fairyContactExiting.value || !fairyContactVideoRef.value) return;
@@ -270,6 +281,7 @@ const savedUserTheme = ref(false);
 const isShortcutLocked = ref(true);
 const welcomeVideoSrc = ref("");
 const welcomeVideoRef = ref(null);
+const fairyVideoSrc = ref("");
 
 const audioRef = ref(null);
 const glowIntensity = ref(0);
@@ -394,13 +406,28 @@ const exitNightclub = () => {
 };
 
 // --- Lifecycle Hooks ---
-onMounted(() => {
+onMounted(async () => {
   window.addEventListener("scroll", handleScroll);
   window.addEventListener("keydown", handleKeyboardShortcut);
 
+  try {
+    const fairyRes = await fetch("/video/fairy.mp4");
+    const fairyBlob = await fairyRes.blob();
+    fairyVideoSrc.value = URL.createObjectURL(fairyBlob);
+  } catch (e) {
+    fairyVideoSrc.value = "/video/fairy.mp4";
+  }
+
+  try {
+    const welcomeRes = await fetch("/video/welcome2.mp4");
+    const welcomeBlob = await welcomeRes.blob();
+    welcomeVideoSrc.value = URL.createObjectURL(welcomeBlob);
+  } catch (e) {
+    welcomeVideoSrc.value = "/video/welcome2.mp4";
+  }
+
   setTimeout(() => {
     isShortcutLocked.value = false;
-    welcomeVideoSrc.value = "/video/welcome2.mp4";
   }, 4000);
 });
 
@@ -409,6 +436,13 @@ onUnmounted(() => {
   window.removeEventListener("keydown", handleKeyboardShortcut);
   if (animationId) cancelAnimationFrame(animationId);
   if (audioCtx) audioCtx.close();
+
+  if (fairyVideoSrc.value && fairyVideoSrc.value.startsWith("blob:")) {
+    URL.revokeObjectURL(fairyVideoSrc.value);
+  }
+  if (welcomeVideoSrc.value && welcomeVideoSrc.value.startsWith("blob:")) {
+    URL.revokeObjectURL(welcomeVideoSrc.value);
+  }
 });
 </script>
 
@@ -434,7 +468,7 @@ onUnmounted(() => {
 
   <div
     :class="[
-      'grid grid-cols-12 transition-colors duration-1000 relative z-20',
+      'grid grid-cols-12 transition-colors duration-1000 relative z-20 overflow-x-clip',
       activeTheme ? 'bg-black/90 text-white' : 'bg-neutral-200 text-neutral-900 dark:text-neutral-100 dark:bg-black',
     ]">
     <div class="col-span-full z-20 sticky top-0 lg:block hidden">
@@ -477,20 +511,28 @@ onUnmounted(() => {
               v-if="isDark && !activeTheme"
               v-show="fairyAboutTriggered"
               ref="fairyVideoRef"
-              src="/video/fairy.mp4"
+              :src="fairyVideoSrc"
               muted
               playsinline
+              controlsList="nodownload no-remote-playback noremoteplayback"
+              disablePictureInPicture
+              disableRemotePlayback
+              aria-hidden="true"
+              tabindex="-1"
+              data-idm-disabled="true"
+              idm-skip="true"
+              @contextmenu.prevent
               @click="handleAboutFairyClick"
               @timeupdate="handleAboutFairyTimeUpdate"
               :class="[
-                'absolute z-50 w-28',
+                'absolute z-50 w-28 top-[-2.5rem] left-[-9.5rem]',
                 fairyAboutClickable && !fairyAboutExiting ? 'cursor-pointer pointer-events-auto' : 'pointer-events-none',
-                !fairyAboutLanded && !fairyAboutExiting ? 'top-[50px] left-[-100vw] transition-all duration-[3500ms] ease-out' : '',
-                fairyAboutLanded && !fairyAboutExiting ? 'top-[-2.5rem] left-[-9.5rem] transition-all duration-[3500ms] ease-out' : '',
-                fairyAboutExiting ? 'top-[50px] left-[-100vw] transition-all duration-[3500ms] ease-in-out' : '',
+                !fairyAboutLanded && !fairyAboutExiting ? '-translate-x-[100vw] translate-y-[90px] transition-all duration-[3500ms] ease-out' : '',
+                fairyAboutLanded && !fairyAboutExiting ? 'translate-x-0 translate-y-0 transition-all duration-[3500ms] ease-out' : '',
+                fairyAboutExiting ? '-translate-x-[100vw] translate-y-[90px] transition-all duration-[3500ms] ease-in-out' : '',
               ]"></video>
 
-            {{ activeTheme ? "SYSTEM_OVERRIDE // ABOUT_ME" : "About Me" }}
+            {{ activeTheme ? t('aboutMe.sysTitle') : t('aboutMe.title') }}
           </div>
         </div>
       </div>
@@ -523,20 +565,28 @@ onUnmounted(() => {
             v-if="isDark && !activeTheme"
             v-show="fairySkillsTriggered"
             ref="fairySkillsVideoRef"
-            src="/video/fairy.mp4"
+            :src="fairyVideoSrc"
             muted
             playsinline
+            controlsList="nodownload no-remote-playback noremoteplayback"
+            disablePictureInPicture
+            disableRemotePlayback
+            aria-hidden="true"
+            tabindex="-1"
+            data-idm-disabled="true"
+            idm-skip="true"
+            @contextmenu.prevent
             @click="handleSkillsFairyClick"
             @timeupdate="handleSkillsFairyTimeUpdate"
             :class="[
-              'absolute z-50 w-28 -scale-x-100',
+              'absolute z-50 w-28 top-[-2.5rem] right-[-9.5rem] -scale-x-100',
               fairySkillsClickable && !fairySkillsExiting ? 'cursor-pointer pointer-events-auto' : 'pointer-events-none',
-              !fairySkillsLanded && !fairySkillsExiting ? 'top-[50px] right-[-100vw] transition-all duration-[3500ms] ease-out' : '',
-              fairySkillsLanded && !fairySkillsExiting ? 'top-[-2.5rem] right-[-9.5rem] transition-all duration-[3500ms] ease-out' : '',
-              fairySkillsExiting ? 'top-[50px] right-[-100vw] transition-all duration-[3500ms] ease-in-out' : '',
+              !fairySkillsLanded && !fairySkillsExiting ? 'translate-x-[100vw] translate-y-[90px] transition-all duration-[3500ms] ease-out' : '',
+              fairySkillsLanded && !fairySkillsExiting ? 'translate-x-0 translate-y-0 transition-all duration-[3500ms] ease-out' : '',
+              fairySkillsExiting ? 'translate-x-[100vw] translate-y-[90px] transition-all duration-[3500ms] ease-in-out' : '',
             ]"></video>
 
-          {{ activeTheme ? "CORE_MODULES // SKILLS" : "skills" }}
+          {{ activeTheme ? t('skills.sysTitle') : t('skills.title') }}
         </div>
       </div>
       <Skills :activeTheme="activeTheme" :glowIntensity="glowIntensity" @handleDisplay="handleDisplay" />
@@ -553,7 +603,7 @@ onUnmounted(() => {
               ? 'border-2 border-current animate-neon-chroma font-mono tracking-widest text-white shadow-[0_0_20px_currentColor]'
               : 'border-[6px] border-neutral-900 dark:border-neutral-100 border-solid',
           ]">
-          {{ activeTheme ? "DATABASE // ARCHIVES" : "Projects" }}
+          {{ activeTheme ? t('projects.sysTitle') : t('projects.title') }}
         </div>
       </div>
       <Projects :activeTheme="activeTheme" :glowIntensity="glowIntensity" @handleDisplay="handleDisplay" />
@@ -584,20 +634,28 @@ onUnmounted(() => {
             v-if="isDark && !activeTheme"
             v-show="fairyContactTriggered"
             ref="fairyContactVideoRef"
-            src="/video/fairy.mp4"
+            :src="fairyVideoSrc"
             muted
             playsinline
+            controlsList="nodownload no-remote-playback noremoteplayback"
+            disablePictureInPicture
+            disableRemotePlayback
+            aria-hidden="true"
+            tabindex="-1"
+            data-idm-disabled="true"
+            idm-skip="true"
+            @contextmenu.prevent
             @click="handleContactFairyClick"
             @timeupdate="handleContactFairyTimeUpdate"
             :class="[
-              'absolute z-50 w-28',
+              'absolute z-50 w-28 top-[-2.5rem] left-[-9.5rem]',
               fairyContactClickable && !fairyContactExiting ? 'cursor-pointer pointer-events-auto' : 'pointer-events-none',
-              !fairyContactLanded && !fairyContactExiting ? 'top-[50px] left-[-100vw] transition-all duration-[3500ms] ease-out' : '',
-              fairyContactLanded && !fairyContactExiting ? 'top-[-2.5rem] left-[-9.5rem] transition-all duration-[3500ms] ease-out' : '',
-              fairyContactExiting ? 'top-[50px] left-[-100vw] transition-all duration-[3500ms] ease-in-out' : '',
+              !fairyContactLanded && !fairyContactExiting ? '-translate-x-[100vw] translate-y-[90px] transition-all duration-[3500ms] ease-out' : '',
+              fairyContactLanded && !fairyContactExiting ? 'translate-x-0 translate-y-0 transition-all duration-[3500ms] ease-out' : '',
+              fairyContactExiting ? '-translate-x-[100vw] translate-y-[90px] transition-all duration-[3500ms] ease-in-out' : '',
             ]"></video>
 
-          {{ activeTheme ? "SECURE_COMMLINK // CONTACT" : "Contact" }}
+          {{ activeTheme ? t('contact.sysTitle') : t('contact.title') }}
         </div>
       </div>
       <ContactMe :activeTheme="activeTheme" :glowIntensity="glowIntensity" @handleDisplay="handleDisplay" />
@@ -628,8 +686,16 @@ onUnmounted(() => {
           muted
           playsinline
           preload="auto"
+          controlsList="nodownload no-remote-playback noremoteplayback"
+          disablePictureInPicture
+          disableRemotePlayback
+          aria-hidden="true"
+          tabindex="-1"
+          data-idm-disabled="true"
+          idm-skip="true"
+          @contextmenu.prevent
           @ended="onWelcomeVideoEnded"
-          class="max-w-3xl w-full drop-shadow-[0_0_30px_rgba(250,204,21,0.8)] rounded-xl"></video>
+          class="max-w-3xl w-full drop-shadow-[0_0_30px_rgba(250,204,21,0.8)] rounded-xl pointer-events-none"></video>
       </div>
     </Transition>
   </Teleport>

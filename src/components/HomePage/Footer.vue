@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from "vue";
 import { useDark, useToggle } from "@vueuse/core";
+import { useI18n } from "vue-i18n";
 
 const emit = defineEmits(["handleDisplay"]);
 
@@ -16,6 +17,7 @@ const props = defineProps({
 
 const isDark = useDark();
 const toggleDark = useToggle(isDark);
+const { t } = useI18n();
 
 // تابع دریافت رنگ تم
 const getThemeColor = () => {
@@ -96,7 +98,7 @@ const getThemeColor = () => {
 
     <div class="mt-6 relative z-10">
       <p :class="['transition-all duration-500', activeTheme ? 'font-mono text-sm tracking-widest text-current neon-text' : 'font-semibold']">
-        {{ activeTheme ? "[END_OF_LINE] // © 2025 HOSEIN_MAZINANI" : "@2025 Hosein Mazinani All Rights Reserved." }}
+        {{ activeTheme ? t('footer.sysCopyright') : t('footer.copyright') }}
       </p>
     </div>
   </div>

@@ -2,6 +2,7 @@
 import { ref, onMounted, onUnmounted } from "vue";
 import { useDark, useToggle } from "@vueuse/core";
 import Divider from "../Divider.vue";
+import { useI18n } from "vue-i18n";
 
 const emit = defineEmits(["handleDisplay"]);
 
@@ -13,6 +14,7 @@ const props = defineProps({});
 
 const isDark = useDark();
 const toggleDark = useToggle(isDark);
+const { t, locale } = useI18n();
 // انیمیشن بر اساس IntersectionObserver
 const sectionVisibility = ref([false, false, false, false, false, false]);
 const sectionRefs = ref([]); // ذخیرهٔ رفرنس هر المان
@@ -48,7 +50,7 @@ const showThankYouMessage = ref(false);
 const thankYouText = ref("");
 
 const submitForm = async () => {
-  thankYouText.value = message.value.trim() ? "Thanks for your message" : "Thanks for your empty message";
+  thankYouText.value = message.value.trim() ? t("contact.thanks") : t("contact.empty");
   const response = await fetch("https://api.web3forms.com/submit", {
     method: "POST",
     headers: {
@@ -93,13 +95,13 @@ const handlePhoneInput = (e) => {
 <template>
   <div class="grid grid-cols-12 px-5">
     <div class="col-span-full flex justify-center">
-      <div class="border-[6px] uppercase border-neutral-900 dark:border-neutral-100 border-solid px-14 py-3 text-xl font-semibold">Contact</div>
+      <div class="border-[6px] uppercase border-neutral-900 dark:border-neutral-100 border-solid px-14 py-3 text-xl font-semibold">{{ t('contact.title') }}</div>
     </div>
     <!-- skils -->
     <div :ref="(el) => (sectionRefs[0] = el)" class="col-span-full flex mt-20 justify-center animate-section" :class="{ visible: sectionVisibility[0] }">
       <p class=" col-span-full text-center">
-        Ready to bring your ideas to life? Let's discuss how I can help make your project a success. Reach out to me and let's
-        <span class="text-lg font-semibold"> get started!</span>
+        {{ t('contact.desc1') }}
+        <span class="text-lg font-semibold">{{ t('contact.desc2') }}</span>
       </p>
     </div>
     <div :ref="(el) => (sectionRefs[1] = el)" class="col-span-full flex justify-center mb-20 animate-section" :class="{ visible: sectionVisibility[1] }">
@@ -109,8 +111,11 @@ const handlePhoneInput = (e) => {
       <form @submit.prevent="submitForm" class="flex flex-col w-full gap-10">
         <div :ref="(el) => (sectionRefs[2] = el)" class="animate-section" :class="{ visible: sectionVisibility[2] }">
           <input
-            class="border-l-4 border-b-4 border-neutral-900 dark:border-neutral-100 border-solid w-full ps-5 pb-2 placeholder-neutral-700 dark:placeholder-neutral-500 focus:outline-none"
-            placeholder="Name"
+            :class="[
+              'border-b-4 border-neutral-900 dark:border-neutral-100 border-solid w-full ps-5 pb-2 placeholder-neutral-700 dark:placeholder-neutral-500 focus:outline-none',
+              locale === 'fa' ? 'border-r-4' : 'border-l-4'
+            ]"
+            :placeholder="t('contact.name')"
             type="text"
             name="name"
             v-model="name"
@@ -119,8 +124,11 @@ const handlePhoneInput = (e) => {
         </div>
         <div :ref="(el) => (sectionRefs[3] = el)" class="animate-section" :class="{ visible: sectionVisibility[3] }">
           <input
-            class="border-l-4 border-b-4 border-neutral-900 dark:border-neutral-100 border-solid w-full ps-5 pb-2 placeholder-neutral-700 dark:placeholder-neutral-500 focus:outline-none autofill:bg-neutral-900"
-            placeholder="Email"
+            :class="[
+              'border-b-4 border-neutral-900 dark:border-neutral-100 border-solid w-full ps-5 pb-2 placeholder-neutral-700 dark:placeholder-neutral-500 focus:outline-none autofill:bg-neutral-900',
+              locale === 'fa' ? 'border-r-4' : 'border-l-4'
+            ]"
+            :placeholder="t('contact.email')"
             type="email"
             name="email"
             v-model="email"
@@ -130,8 +138,11 @@ const handlePhoneInput = (e) => {
         <div :ref="(el) => (sectionRefs[4] = el)" class="animate-section" :class="{ visible: sectionVisibility[4] }">
           <input
             @input="handlePhoneInput"
-            class="border-l-4 border-b-4 border-neutral-900 dark:border-neutral-100 border-solid w-full ps-5 pb-2 placeholder-neutral-700 dark:placeholder-neutral-500 focus:outline-none autofill:bg-neutral-900"
-            placeholder="phone"
+            :class="[
+              'border-b-4 border-neutral-900 dark:border-neutral-100 border-solid w-full ps-5 pb-2 placeholder-neutral-700 dark:placeholder-neutral-500 focus:outline-none autofill:bg-neutral-900',
+              locale === 'fa' ? 'border-r-4' : 'border-l-4'
+            ]"
+            :placeholder="t('contact.phone')"
             type="text"
             name="phone"
             v-model="phone"
@@ -139,8 +150,11 @@ const handlePhoneInput = (e) => {
         </div>
         <div :ref="(el) => (sectionRefs[5] = el)" class="animate-section" :class="{ visible: sectionVisibility[5] }">
           <textarea
-            class="border-l-4 border-b-4 border-neutral-900 dark:border-neutral-100 border-solid w-full ps-5 placeholder-neutral-700 dark:placeholder-neutral-500 focus:outline-none"
-            placeholder="Message"
+            :class="[
+              'border-b-4 border-neutral-900 dark:border-neutral-100 border-solid w-full ps-5 placeholder-neutral-700 dark:placeholder-neutral-500 focus:outline-none',
+              locale === 'fa' ? 'border-r-4' : 'border-l-4'
+            ]"
+            :placeholder="t('contact.message')"
             name="message"
             rows="5"
             v-model="message"
@@ -148,7 +162,7 @@ const handlePhoneInput = (e) => {
         </div>
         <div class="flex justify-center items-center h-20 flex-col">
           <div class="h-2/3 w-1/2">
-            <button type="submit" role="button" class="button-send w-full !text-neutral-900 dark:!text-neutral-100 !border-neutral-900 dark:!border-neutral-100">Send Message</button>
+            <button type="submit" role="button" class="button-send w-full !text-neutral-900 dark:!text-neutral-100 !border-neutral-900 dark:!border-neutral-100">{{ t('contact.send') }}</button>
           </div>
           <div v-show="showThankYouMessage" class="thank-you-message text-center h-1/3 mt-6 flex items-center justify-center gap-2" :class="{ visible: showThankYouMessage }">
             <p class="text-sm">{{ thankYouText }}</p>

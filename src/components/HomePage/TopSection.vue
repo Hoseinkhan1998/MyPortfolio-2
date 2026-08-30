@@ -2,6 +2,7 @@
 import { ref, watch, onMounted, onUnmounted } from "vue";
 import { useDark, useToggle } from "@vueuse/core";
 import ParticleText from "../ParticleText.vue";
+import { useI18n } from "vue-i18n";
 
 const emit = defineEmits(["handleDisplay"]);
 
@@ -16,6 +17,23 @@ const props = defineProps({
 });
 
 const djVideoRef = ref(null);
+const djVideoSrc = ref("");
+
+onMounted(async () => {
+  try {
+    const res = await fetch("/video/hoseindj.mp4");
+    const blob = await res.blob();
+    djVideoSrc.value = URL.createObjectURL(blob);
+  } catch (err) {
+    djVideoSrc.value = "/video/hoseindj.mp4";
+  }
+});
+
+onUnmounted(() => {
+  if (djVideoSrc.value && djVideoSrc.value.startsWith("blob:")) {
+    URL.revokeObjectURL(djVideoSrc.value);
+  }
+});
 
 watch(
   () => props.showWelcomeAnimation,
@@ -42,19 +60,20 @@ const onVideoLoaded = () => {
 
 const isDark = useDark();
 const toggleDark = useToggle(isDark);
+const { t, locale } = useI18n();
 </script>
 
 <template>
-  <div class="flex w-full h-screen bg-neutral-100 dark:bg-neutral-900">
+  <div dir="ltr" class="flex w-full h-screen bg-neutral-100 dark:bg-neutral-900">
     <div class="grid w-full grid-cols-12">
       <!-- light mode -->
       <div class="col-span-full bg-toplight h-[103vh] grid grid-cols-12 text-neutral-900">
         <div class="col-span-6 flex items-center justify-center">
-          <div class="flex flex-col mt-10">
-            <p class="font-semibold text-xl text-start">Hi, I am</p>
-            <div class="h-28 w-[460px] max-w-full relative -ml-3">
+          <div :class="['flex flex-col mt-10 w-full max-w-[460px]', locale === 'fa' ? 'items-end text-right' : 'items-start text-left']">
+            <p class="font-semibold text-xl w-full" :class="locale === 'fa' ? 'text-right' : 'text-left'">{{ t('topSection.hi') }}</p>
+            <div class="h-28 w-[460px] max-w-full relative" :class="locale === 'fa' ? '-mr-3' : '-ml-3'">
               <ParticleText
-                text="Hosein Mazinani"
+                :text="t('topSection.name')"
                 :particleSize="2.2"
                 :density="3"
                 :color="'#000000'"
@@ -71,8 +90,8 @@ const toggleDark = useToggle(isDark);
                 fontFamily="inherit"
                 :glow="Boolean(activeTheme)" />
             </div>
-            <p class="opacity-75 text-lg">Front-end Developer</p>
-            <div class="flex items-center gap-5 mt-20">
+            <p class="opacity-75 text-lg w-full" :class="locale === 'fa' ? 'text-right' : 'text-left'">{{ t('topSection.role') }}</p>
+            <div class="flex items-center gap-5 mt-20" :class="locale === 'fa' ? 'justify-end' : 'justify-start'">
               <!-- github -->
               <a
                 href="https://github.com/Hoseinkhan1998"
@@ -109,15 +128,23 @@ const toggleDark = useToggle(isDark);
         <div class="col-span-6 ps-20 relative">
           <video
             ref="djVideoRef"
-            src="/video/hoseindj.mp4"
+            :src="djVideoSrc"
             muted
             playsinline
             preload="auto"
+            controlsList="nodownload no-remote-playback noremoteplayback"
+            disablePictureInPicture
+            disableRemotePlayback
+            aria-hidden="true"
+            tabindex="-1"
+            data-idm-disabled="true"
+            idm-skip="true"
+            @contextmenu.prevent
             @loadedmetadata="onVideoLoaded"
             @ended="onDjVideoEnded"
             :class="[
-              'h-[85vh] absolute bottom-0 transition-opacity duration-1000 ease-in-out',
-              activeTheme ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none',
+              'h-[85vh] absolute bottom-0 transition-opacity duration-1000 ease-in-out pointer-events-none',
+              activeTheme ? 'opacity-100' : 'opacity-0',
             ]"></video>
 
           <img

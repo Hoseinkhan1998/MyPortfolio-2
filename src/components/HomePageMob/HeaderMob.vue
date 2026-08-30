@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted, onUnmounted, watch } from "vue";
 import { useDark, useToggle } from "@vueuse/core";
+import { useI18n } from "vue-i18n";
 
 const emit = defineEmits(["handleDisplay"]);
 
@@ -21,6 +22,11 @@ const isDark = useDark();
 const toggleDark = useToggle(isDark);
 const menuRef = ref(null); // Ref برای منوی دراپ‌دون
 const buttonRef = ref(null); // Ref برای دکمه همبرگر
+const { t, locale } = useI18n();
+
+const toggleLanguage = () => {
+  locale.value = locale.value === 'en' ? 'fa' : 'en';
+};
 
 function handleClickOutside(event) {
   if (menuRef.value && !menuRef.value.contains(event.target) && buttonRef.value && !buttonRef.value.contains(event.target)) {
@@ -44,9 +50,18 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="grid grid-cols-12">
+  <div dir="ltr" class="grid grid-cols-12">
     <div class="col-span-6">
-      <div class="flex justify-start">
+      <div class="flex justify-start items-center gap-4">
+        <!-- Language Switcher -->
+        <button
+          @click="toggleLanguage"
+          class="font-bold text-lg hover:text-cyan-500 transition-colors z-30"
+          :class="isDark ? 'text-neutral-100' : 'text-neutral-900'"
+        >
+          {{ locale === 'en' ? 'FA' : 'EN' }}
+        </button>
+
         <div class="cursor-pointer text-neutral-900 dark:text-neutral-100">
           <label class="swap !z-30 swap-rotate">
             <!-- this hidden checkbox controls the state -->
@@ -95,8 +110,8 @@ onUnmounted(() => {
                   toggleMenu();
                 "
                 :class="['rounded-xl w-36', props.currentSection === 'aboutMeMob' ? 'bg-neutral-100 text-neutral-900' : '']"
-                class="block capitalize text-center w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-neutral-700">
-                about me
+                class="block text-center w-full px-4 py-2 hover:bg-gray-100 dark:hover:bg-neutral-700">
+                {{ t('header.aboutMe') }}
               </button>
               <button
                 @click="
@@ -104,8 +119,8 @@ onUnmounted(() => {
                   toggleMenu();
                 "
                 :class="['rounded-xl w-36', props.currentSection === 'skillsMob' ? 'bg-neutral-100 text-neutral-900' : '']"
-                class="block capitalize w-full text-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-neutral-700">
-                skills
+                class="block w-full text-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-neutral-700">
+                {{ t('header.skills') }}
               </button>
               <button
                 @click="
@@ -113,8 +128,8 @@ onUnmounted(() => {
                   toggleMenu();
                 "
                 :class="['rounded-xl w-36', props.currentSection === 'projectsMob' ? 'bg-neutral-100 text-neutral-900' : '']"
-                class="block capitalize w-full text-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-neutral-700">
-                projects
+                class="block w-full text-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-neutral-700">
+                {{ t('header.projects') }}
               </button>
               <button
                 @click="
@@ -122,8 +137,8 @@ onUnmounted(() => {
                   toggleMenu();
                 "
                 :class="['rounded-xl w-36', props.currentSection === 'contactMob' ? 'bg-neutral-100 text-neutral-900' : '']"
-                class="block capitalize w-full text-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-neutral-700">
-                contact
+                class="block w-full text-center px-4 py-2 hover:bg-gray-100 dark:hover:bg-neutral-700">
+                {{ t('header.contact') }}
               </button>
             </div>
           </div>

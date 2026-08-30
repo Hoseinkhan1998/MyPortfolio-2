@@ -2,6 +2,7 @@
 import { ref, onMounted, onUnmounted } from "vue";
 import { useDark, useToggle } from "@vueuse/core";
 import Divider from "../Divider.vue";
+import { useI18n } from "vue-i18n";
 
 const emit = defineEmits(["handleDisplay"]);
 
@@ -23,6 +24,7 @@ const getThemeColor = () => {
 
 const isDark = useDark();
 const toggleDark = useToggle(isDark);
+const { t, locale } = useI18n();
 // انیمیشن بر اساس IntersectionObserver
 const sectionVisibility = ref([false, false, false, false, false, false]);
 const sectionRefs = ref([]); // ذخیرهٔ رفرنس هر المان
@@ -58,7 +60,7 @@ const showThankYouMessage = ref(false);
 const thankYouText = ref("");
 
 const submitForm = async () => {
-  thankYouText.value = message.value.trim() ? "Thanks for your message" : "Thanks for your empty message";
+  thankYouText.value = message.value.trim() ? t("contact.thanks") : t("contact.empty");
   const response = await fetch("https://api.web3forms.com/submit", {
     method: "POST",
     headers: {
@@ -110,7 +112,7 @@ const handlePhoneInput = (e) => {
             ? 'border-2 border-current animate-neon-chroma font-mono tracking-widest text-white shadow-[0_0_20px_currentColor]'
             : 'border-[6px] border-neutral-900 dark:border-neutral-100 border-solid',
         ]">
-        {{ activeTheme ? "SECURE_COMMLINK // CONTACT" : "Contact" }}
+        {{ activeTheme ? t('contact.sysTitle') : t('contact.title') }}
       </div>
     </div> -->
     <!-- skils -->
@@ -120,8 +122,8 @@ const handlePhoneInput = (e) => {
           'col-span-3 w-1/2 text-center transition-all duration-500',
           activeTheme ? 'font-mono text-cyan-400/80 drop-shadow-[0_0_8px_rgba(6,182,212,0.6)] tracking-wide' : 'text-neutral-700 dark:text-neutral-300',
         ]">
-        Ready to bring your ideas to life? Let's discuss how I can help make your project a success. Reach out to me and let's
-        <span :class="[activeTheme ? 'text-white font-bold ' : 'text-lg font-semibold']"> get started!</span>
+        {{ t('contact.desc1') }}
+        <span :class="[activeTheme ? 'text-white font-bold ' : 'text-lg font-semibold']">{{ t('contact.desc2') }}</span>
       </p>
     </div>
     <div class="col-span-full flex justify-center mb-20 mt-20 relative">
@@ -136,9 +138,11 @@ const handlePhoneInput = (e) => {
           <input
             :class="[
               'w-full ps-5 pb-2 placeholder-neutral-700 dark:placeholder-neutral-500 focus:outline-none transition-all duration-300',
-              activeTheme ? 'terminal-input' : 'border-l-4 border-b-4 border-neutral-900 dark:border-neutral-100 border-solid bg-transparent',
+              activeTheme
+                ? 'terminal-input'
+                : (locale === 'fa' ? 'border-r-4 border-b-4' : 'border-l-4 border-b-4') + ' border-neutral-900 dark:border-neutral-100 border-solid bg-transparent',
             ]"
-            placeholder="Name"
+            :placeholder="t('contact.name')"
             type="text"
             name="name"
             v-model="name"
@@ -149,9 +153,11 @@ const handlePhoneInput = (e) => {
           <input
             :class="[
               'w-full ps-5 pb-2 placeholder-neutral-700 dark:placeholder-neutral-500 focus:outline-none transition-all duration-300',
-              activeTheme ? 'terminal-input' : 'border-l-4 border-b-4 border-neutral-900 dark:border-neutral-100 border-solid bg-transparent',
+              activeTheme
+                ? 'terminal-input'
+                : (locale === 'fa' ? 'border-r-4 border-b-4' : 'border-l-4 border-b-4') + ' border-neutral-900 dark:border-neutral-100 border-solid bg-transparent',
             ]"
-            placeholder="Email"
+            :placeholder="t('contact.email')"
             type="email"
             name="email"
             v-model="email"
@@ -163,9 +169,11 @@ const handlePhoneInput = (e) => {
             @input="handlePhoneInput"
             :class="[
               'w-full ps-5 pb-2 placeholder-neutral-700 dark:placeholder-neutral-500 focus:outline-none transition-all duration-300',
-              activeTheme ? 'terminal-input' : 'border-l-4 border-b-4 border-neutral-900 dark:border-neutral-100 border-solid bg-transparent',
+              activeTheme
+                ? 'terminal-input'
+                : (locale === 'fa' ? 'border-r-4 border-b-4' : 'border-l-4 border-b-4') + ' border-neutral-900 dark:border-neutral-100 border-solid bg-transparent',
             ]"
-            placeholder="phone"
+            :placeholder="t('contact.phone')"
             type="text"
             name="phone"
             v-model="phone"
@@ -175,9 +183,11 @@ const handlePhoneInput = (e) => {
           <textarea
             :class="[
               'w-full ps-5 placeholder-neutral-700 dark:placeholder-neutral-500 focus:outline-none transition-all duration-300',
-              activeTheme ? 'terminal-input' : 'border-l-4 border-b-4 border-neutral-900 dark:border-neutral-100 border-solid bg-transparent',
+              activeTheme
+                ? 'terminal-input'
+                : (locale === 'fa' ? 'border-r-4 border-b-4' : 'border-l-4 border-b-4') + ' border-neutral-900 dark:border-neutral-100 border-solid bg-transparent',
             ]"
-            placeholder="Message"
+            :placeholder="t('contact.message')"
             name="message"
             rows="5"
             v-model="message"
@@ -191,14 +201,14 @@ const handlePhoneInput = (e) => {
               role="button"
               class="button-send w-full"
               :class="activeTheme ? 'terminal-btn' : '!text-neutral-900 dark:!text-neutral-100 !border-neutral-900 dark:!border-neutral-100'">
-              {{ activeTheme ? "TRANSMIT_DATA" : "Send Message" }}
+              {{ activeTheme ? t('contact.sysSend') : t('contact.send') }}
             </button>
           </div>
           <div
             v-show="showThankYouMessage"
             class="thank-you-message text-center h-1/3 mt-6 flex items-center justify-center gap-2"
             :class="{ visible: showThankYouMessage, 'terminal-success': activeTheme }">
-            <p class="text-sm">{{ activeTheme ? "DATA_RECEIVED_//_END_TRANSMISSION" : thankYouText }}</p>
+            <p class="text-sm">{{ activeTheme ? t('contact.sysThanks') : thankYouText }}</p>
             <svg v-if="!activeTheme" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="size-5 fill-red-600">
               <path
                 d="m9.653 16.915-.005-.003-.019-.01a20.759 20.759 0 0 1-1.162-.682 22.045 22.045 0 0 1-2.582-1.9C4.045 12.733 2 10.352 2 7.5a4.5 4.5 0 0 1 8-2.828A4.5 4.5 0 0 1 18 7.5c0 2.852-2.044 5.233-3.885 6.82a22.049 22.049 0 0 1-3.744 2.582l-.019.01-.005.003h-.002a.739.739 0 0 1-.69.001l-.002-.001Z" />

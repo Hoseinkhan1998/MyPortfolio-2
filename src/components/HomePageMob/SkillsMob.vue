@@ -2,6 +2,7 @@
 import { ref, onMounted, onUnmounted } from "vue";
 import { useDark, useToggle } from "@vueuse/core";
 import Divider from "../Divider.vue";
+import { useI18n } from "vue-i18n";
 
 const emit = defineEmits(["handleDisplay"]);
 
@@ -15,6 +16,7 @@ const props = defineProps({
 
 const isDark = useDark();
 const toggleDark = useToggle(isDark);
+const { t } = useI18n();
 
 const sectionVisibility = ref(Array(16).fill(false));
 const sectionRefs = ref([]);
@@ -44,7 +46,7 @@ onUnmounted(() => {
 <template>
   <div class="grid grid-cols-12">
     <div class="col-span-full flex justify-center">
-      <div class="border-[6px] uppercase border-neutral-900 dark:border-neutral-100 border-solid px-16 py-3 text-xl font-semibold">skills</div>
+      <div class="border-[6px] uppercase border-neutral-900 dark:border-neutral-100 border-solid px-16 py-3 text-xl font-semibold">{{ t('skills.title') }}</div>
     </div>
     <!-- skils -->
     <div class="col-span-full flex mt-20 justify-center">

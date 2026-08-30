@@ -2,6 +2,7 @@
 import { ref, onMounted, onUnmounted } from "vue";
 import { useDark, useToggle } from "@vueuse/core";
 import Divider from "../Divider.vue";
+import { useI18n } from "vue-i18n";
 
 const emit = defineEmits(["handleDisplay"]);
 
@@ -23,6 +24,7 @@ const getThemeColor = () => {
 
 const isDark = useDark();
 const toggleDark = useToggle(isDark);
+const { t } = useI18n();
 
 const handleScroll = () => {
   const cards = document.querySelectorAll(".project-card");
@@ -51,49 +53,49 @@ const projects = [
     skills: ["Nuxt 4", "TypeScript", "Supabase", "Pinia", "Nuxt Image", "Tailwind 4"],
     img: "mazzinshop.webp",
     link: "https://mazzinshop.ir",
-    description: "A modern e-commerce platform built with Nuxt 4 and TypeScript. Features product search engine, Supabase, and dynamic store system.",
+    descriptionKey: "mazzinshop",
   },
   {
     skills: ["React", "TypeScript", "AI Analysis", "React Query", "Supabase", "Framer Motion", "Zod", "Medical Imaging"],
     img: "lab-ai.webp",
     link: "https://app.snapcyte.com",
-    description: "AI-powered laboratory platform for medical imaging analysis. Features advanced model interpretation and scientific workflows.",
+    descriptionKey: "labAi",
   },
   {
     skills: ["vue", "daisyui", "vuetify", "Tailwind", "Swiper"],
     img: "mywebsite.webp",
     link: "https://www.hoseinmazinani.ir",
-    description: "a CV website for Hosein Mazinani, showcasing my skills using Vue.js and Tailwind CSS. The site highlights my experience in a clean design.",
+    descriptionKey: "mywebsite",
   },
   {
     skills: ["React", "Tailwind", "Syncfusion", "Eslint"],
     img: "dashboard.webp",
     link: "https://dashboard-five-flax.vercel.app/",
-    description: "Data-rich React dashboard system built for monitoring business stats. Styled with Tailwind CSS and advanced Syncfusion widgets.",
+    descriptionKey: "dashboard",
   },
   {
     skills: ["NEXT.JS", "React", "Mongo db", "SWR", "Html&Css"],
     img: "event.webp",
     link: "https://nextjs-tutorial-coral-three.vercel.app/",
-    description: "Dynamic event list web application built using Next.js and MongoDB. Features real-time server-side data synchronization via SWR.",
+    descriptionKey: "event",
   },
   {
     skills: ["React", "MUI", "Axios", "Emotion"],
     img: "clone.webp",
     link: "https://youtube-clone-xi-five.vercel.app/",
-    description: "YouTube clone app built in React with Material UI framework. Integrated with third-party APIs using Axios for video stream feed.",
+    descriptionKey: "clone",
   },
   {
     skills: ["vue", "daisyui", "vuetify", "Tailwind", "Swiper"],
     img: "octopus.webp",
     link: "https://octopus-website-ten.vercel.app/",
-    description: "Official landing page for Octopus Company to introduce modules. Showcases enterprise solutions with fully interactive preview panels.",
+    descriptionKey: "octopus",
   },
   {
     skills: ["vue", "daisyui", "vuetify", "Tailwind", "Swiper"],
     img: "yekmovie.webp",
     link: "https://yek-movie-hosein-khan.vercel.app/",
-    description: "A media streaming and entertainment platform for movie downloads. Designed with full Persian language localization and search system.",
+    descriptionKey: "yekmovie",
   },
 ];
 
@@ -110,7 +112,7 @@ const sectionVisibility = ref(projects.map(() => false));
             ? 'border-2 border-current animate-neon-chroma font-mono tracking-widest text-white shadow-[0_0_20px_currentColor]'
             : 'border-[6px] border-neutral-900 dark:border-neutral-100 border-solid',
         ]">
-        {{ activeTheme ? "DATABASE // ARCHIVES" : "Projects" }}
+        {{ activeTheme ? t('projects.sysTitle') : t('projects.title') }}
       </div>
     </div> -->
     <!-- skils -->
@@ -147,13 +149,13 @@ const sectionVisibility = ref(projects.map(() => false));
                   target="_blank"
                   class="visit-btn flex text-white font-semibold py-1 justify-center items-center rounded-lg mb-6 -mt-3"
                   style="background-color: rgba(5, 5, 5, 0.5); border: solid 2px white">
-                  Visit
+                  {{ t('projects.visit') }}
                 </a>
               </div>
             </div>
           </div>
           <div class="text-[14px] mt-2 pl-3 font-medium pb-2 pr-3 relative z-10">
-            <p class="project-desc">{{ project.description }}</p>
+            <p class="project-desc">{{ t('projects.items.' + project.descriptionKey + '.desc') }}</p>
           </div>
         </div>
       </div>
