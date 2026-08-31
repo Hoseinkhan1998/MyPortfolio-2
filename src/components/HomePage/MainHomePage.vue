@@ -609,7 +609,7 @@ onUnmounted(() => {
       <Projects :activeTheme="activeTheme" :glowIntensity="glowIntensity" @handleDisplay="handleDisplay" />
     </div>
     <div class="col-span-full lg:hidden block mb-28" id="projectsMob">
-      <ProjectsMob @handleDisplay="handleDisplay" />
+      <ProjectsMob :activeTheme="activeTheme" :glowIntensity="glowIntensity" @handleDisplay="handleDisplay" />
     </div>
     <div class="col-span-full lg:block hidden mb-28" id="contact">
       <div class="col-span-full flex justify-center">
