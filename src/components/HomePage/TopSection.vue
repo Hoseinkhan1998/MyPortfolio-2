@@ -1,6 +1,6 @@
 <script setup>
 import { ref, watch, onMounted, onUnmounted } from "vue";
-import { useDark, useToggle } from "@vueuse/core";
+import { isDark } from "../../composables/useTheme";
 import ParticleText from "../ParticleText.vue";
 import { useI18n } from "vue-i18n";
 
@@ -58,8 +58,6 @@ const onVideoLoaded = () => {
   }
 };
 
-const isDark = useDark();
-const toggleDark = useToggle(isDark);
 const { t, locale } = useI18n();
 </script>
 

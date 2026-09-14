@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from "vue";
-import { useDark, useToggle } from "@vueuse/core";
+import { isDark } from "../../composables/useTheme";
 import Divider from "../Divider.vue";
 import BorderGlow from "../BorderGlow.vue";
 import MagicRings from "../MagicRings.vue";
@@ -18,8 +18,6 @@ const props = defineProps({
   glowIntensity: Number,
 });
 
-const isDark = useDark();
-const toggleDark = useToggle(isDark);
 const aboutSection = ref(null);
 const exploreTrigger = ref(null);
 const lastCard = ref(null);

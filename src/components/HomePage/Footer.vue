@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue";
-import { useDark, useToggle } from "@vueuse/core";
+import { isDark } from "../../composables/useTheme";
 import { useI18n } from "vue-i18n";
 
 const emit = defineEmits(["handleDisplay"]);
@@ -15,8 +15,6 @@ const props = defineProps({
   glowIntensity: Number,
 });
 
-const isDark = useDark();
-const toggleDark = useToggle(isDark);
 const { t } = useI18n();
 
 // تابع دریافت رنگ تم

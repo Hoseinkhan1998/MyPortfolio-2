@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from "vue";
-import { useDark, useToggle } from "@vueuse/core";
+import { isDark } from "../../composables/useTheme";
 import Divider from "../Divider.vue";
 import { useI18n } from "vue-i18n";
 
@@ -12,8 +12,6 @@ function handleDisplay(item) {
 
 const props = defineProps({});
 
-const isDark = useDark();
-const toggleDark = useToggle(isDark);
 const { t, locale } = useI18n();
 // انیمیشن بر اساس IntersectionObserver
 const sectionVisibility = ref([false, false, false, false, false, false]);

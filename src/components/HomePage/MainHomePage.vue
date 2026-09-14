@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, onUnmounted, computed, watch } from "vue";
-import { useDark } from "@vueuse/core";
+import { isDark } from "../../composables/useTheme";
 import { useI18n } from "vue-i18n";
 import TopSection from "./TopSection.vue";
 import Header from "./Header.vue";
@@ -19,7 +19,6 @@ import NightclubModal from "../NightclubModal.vue";
 
 const currentSection = ref("");
 
-const isDark = useDark();
 const { t, locale } = useI18n();
 // --- متغیرهای پری بخش About Me ---
 const fairyVideoRef = ref(null);
@@ -539,7 +538,7 @@ onUnmounted(() => {
       <AboutMe :activeTheme="activeTheme" :glowIntensity="glowIntensity" @handleDisplay="handleDisplay" />
     </div>
     <div class="col-span-full lg:hidden block mt-24 playtable" id="aboutMeMob">
-      <AboutMeMob @handleDisplay="handleDisplay" />
+      <AboutMeMob :activeTheme="activeTheme" :glowIntensity="glowIntensity" @handleDisplay="handleDisplay" />
     </div>
 
     <div class="col-span-full lg:block hidden mb-28" id="skills">

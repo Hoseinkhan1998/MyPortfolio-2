@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from "vue";
-import { useDark, useToggle } from "@vueuse/core";
+import { isDark } from "../../composables/useTheme";
 import { useI18n } from "vue-i18n";
 
 const emit = defineEmits(["handleDisplay"]);
@@ -13,8 +13,6 @@ const props = defineProps({
   isMobile: Boolean,
 });
 
-const isDark = useDark();
-const toggleDark = useToggle(isDark);
 const { t, locale } = useI18n();
 </script>
 

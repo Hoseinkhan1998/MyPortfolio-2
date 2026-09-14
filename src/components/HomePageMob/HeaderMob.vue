@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, onUnmounted, watch } from "vue";
-import { useDark, useToggle } from "@vueuse/core";
+import { isDark, toggleDark } from "../../composables/useTheme";
 import { useI18n } from "vue-i18n";
 
 const emit = defineEmits(["handleDisplay"]);
@@ -18,8 +18,6 @@ function toggleMenu() {
   isMenuOpen.value = !isMenuOpen.value;
 }
 
-const isDark = useDark();
-const toggleDark = useToggle(isDark);
 const menuRef = ref(null); // Ref برای منوی دراپ‌دون
 const buttonRef = ref(null); // Ref برای دکمه همبرگر
 const { t, locale } = useI18n();
@@ -65,7 +63,7 @@ onUnmounted(() => {
         <div class="cursor-pointer text-neutral-900 dark:text-neutral-100">
           <label class="swap !z-30 swap-rotate">
             <!-- this hidden checkbox controls the state -->
-            <input type="checkbox" @click="toggleDark()" />
+            <input type="checkbox" :checked="isDark" @change="toggleDark()" />
 
             <!-- sun icon -->
             <svg class="swap-off h-8 mt-2 w-8 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">

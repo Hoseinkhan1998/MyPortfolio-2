@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from "vue";
-import { useDark, useToggle } from "@vueuse/core";
+import { isDark } from "../../composables/useTheme";
 import Divider from "../Divider.vue";
 import { useI18n } from "vue-i18n";
 
@@ -23,8 +23,6 @@ const getThemeColor = () => {
   return "255, 255, 255";
 };
 
-const isDark = useDark();
-const toggleDark = useToggle(isDark);
 const { t } = useI18n();
 
 const sectionVisibility = ref(Array(16).fill(false));
