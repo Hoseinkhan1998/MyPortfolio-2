@@ -49,6 +49,10 @@ export default {
     sysTitle: "DATABASE // ARCHIVES",
     visit: "Visit",
     items: {
+      nexora: {
+        desc: "Enterprise-grade AI-powered project intelligence & multi-tenant collaborative SaaS. Features 5 dynamic perspectives, real-time presence, and an in-app AI copilot.",
+        descMob: "Enterprise-grade AI-powered project intelligence & multi-tenant collaborative SaaS built with Next.js 16, Supabase RLS, and Tailwind 4. Features 5 dynamic perspectives (Kanban, Gantt, Table, Calendar, List), real-time collaboration, and an intelligent in-app AI copilot."
+      },
       mazzinshop: {
         desc: "A modern e-commerce platform built with Nuxt 4 and TypeScript. Features product search engine, Supabase, and dynamic store system.",
         descMob: "A modern e-commerce platform built with Nuxt 4 and TypeScript, featuring a powerful product search engine, category-based filtering, Supabase integration, Pinia state management, optimized images with Nuxt Image, and a clean responsive UI powered by Tailwind CSS."

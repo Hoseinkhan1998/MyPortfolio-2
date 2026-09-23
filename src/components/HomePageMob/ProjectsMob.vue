@@ -26,6 +26,12 @@ const { t } = useI18n();
 
 const projects = [
   {
+    skills: ["Next.js 16", "TypeScript", "Supabase RLS", "Tailwind 4", "AI Copilot", "dnd-kit", "Real-time"],
+    img: "nexora.webp",
+    link: "https://nexora-kappa-wheat.vercel.app/",
+    descriptionKey: "nexora",
+  },
+  {
     skills: ["Nuxt 4", "TypeScript", "Supabase", "Pinia", "Nuxt Image", "Tailwind 4"],
     img: "mazzinshop.webp",
     link: "https://mazzinshop.ir",

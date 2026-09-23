@@ -48,10 +48,10 @@ onUnmounted(() => {
 
 const projects = [
   {
-    skills: ["Nuxt 4", "TypeScript", "Supabase", "Pinia", "Nuxt Image", "Tailwind 4"],
-    img: "mazzinshop.webp",
-    link: "https://mazzinshop.ir",
-    descriptionKey: "mazzinshop",
+    skills: ["Next.js 16", "TypeScript", "Supabase RLS", "Tailwind 4", "AI Copilot", "dnd-kit", "Real-time"],
+    img: "nexora.webp",
+    link: "https://nexora-kappa-wheat.vercel.app/",
+    descriptionKey: "nexora",
   },
   {
     skills: ["React", "TypeScript", "AI Analysis", "React Query", "Supabase", "Framer Motion", "Zod", "Medical Imaging"],
@@ -60,22 +60,16 @@ const projects = [
     descriptionKey: "labAi",
   },
   {
+    skills: ["Nuxt 4", "TypeScript", "Supabase", "Pinia", "Nuxt Image", "Tailwind 4"],
+    img: "mazzinshop.webp",
+    link: "https://mazzinshop.ir",
+    descriptionKey: "mazzinshop",
+  },
+  {
     skills: ["vue", "daisyui", "vuetify", "Tailwind", "Swiper"],
     img: "mywebsite.webp",
     link: "https://www.hoseinmazinani.ir",
     descriptionKey: "mywebsite",
-  },
-  {
-    skills: ["React", "Tailwind", "Syncfusion", "Eslint"],
-    img: "dashboard.webp",
-    link: "https://dashboard-five-flax.vercel.app/",
-    descriptionKey: "dashboard",
-  },
-  {
-    skills: ["NEXT.JS", "React", "Mongo db", "SWR", "Html&Css"],
-    img: "event.webp",
-    link: "https://nextjs-tutorial-coral-three.vercel.app/",
-    descriptionKey: "event",
   },
   {
     skills: ["React", "MUI", "Axios", "Emotion"],
@@ -85,15 +79,21 @@ const projects = [
   },
   {
     skills: ["vue", "daisyui", "vuetify", "Tailwind", "Swiper"],
+    img: "yekmovie.webp",
+    link: "https://yek-movie-hosein-khan.vercel.app/",
+    descriptionKey: "yekmovie",
+  },
+  {
+    skills: ["vue", "daisyui", "vuetify", "Tailwind", "Swiper"],
     img: "octopus.webp",
     link: "https://octopus-website-ten.vercel.app/",
     descriptionKey: "octopus",
   },
   {
-    skills: ["vue", "daisyui", "vuetify", "Tailwind", "Swiper"],
-    img: "yekmovie.webp",
-    link: "https://yek-movie-hosein-khan.vercel.app/",
-    descriptionKey: "yekmovie",
+    skills: ["React", "Tailwind", "Syncfusion", "Eslint"],
+    img: "dashboard.webp",
+    link: "https://dashboard-five-flax.vercel.app/",
+    descriptionKey: "dashboard",
   },
 ];
 
@@ -147,13 +147,13 @@ const sectionVisibility = ref(projects.map(() => false));
                   target="_blank"
                   class="visit-btn flex text-white font-semibold py-1 justify-center items-center rounded-lg mb-6 -mt-3"
                   style="background-color: rgba(5, 5, 5, 0.5); border: solid 2px white">
-                  {{ t('projects.visit') }}
+                  {{ t("projects.visit") }}
                 </a>
               </div>
             </div>
           </div>
           <div class="text-[14px] mt-2 pl-3 font-medium pb-2 pr-3 relative z-10">
-            <p class="project-desc">{{ t('projects.items.' + project.descriptionKey + '.desc') }}</p>
+            <p class="project-desc">{{ t("projects.items." + project.descriptionKey + ".desc") }}</p>
           </div>
         </div>
       </div>
@@ -268,12 +268,12 @@ const sectionVisibility = ref(projects.map(() => false));
 .nightclub-mode .project-card {
   background-color: rgb(15, 15, 15) !important;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7) !important;
-  border: none !important; 
+  border: none !important;
 }
 
 .nightclub-mode .skill1 {
   filter: sepia(0.3) hue-rotate(calc(var(--glow-intensity) * 90deg)) contrast(calc(1 + var(--glow-intensity) * 0.8));
-  transition: box-shadow 0.5s ease-in-out !important; 
+  transition: box-shadow 0.5s ease-in-out !important;
 }
 
 .nightclub-mode .skill1:hover {
